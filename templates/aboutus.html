@@ -1,0 +1,54 @@
+{% extends "base2.html" %} {% block content %} {% comment %}<a
+  href="{% url 'core:author' user.slug %}"
+  >{{user.user}}</a
+>
+{% endcomment %} {% comment %}
+<a href="{% url 'core:aboutus' user.user %}">{{user.user}}</a> {%endcomment %}
+<div class="container_about">
+  <div class="d-flex">
+    {% for user in data %}
+    <div class="card">
+      <div class="card-img">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <a href="{% url 'core:author' user.slug %}">
+              <img src="{{user.image.url}}" alt="{{user.user}}" />
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-body text-center">
+        <a href="{% url 'core:author' user.slug %}" class="black-text">
+          <h3>{{user.user}}</h3>
+        </a>
+        <small>{{user.work}}</small>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+<p>Contact Form</p>
+<form method="post">
+  {% csrf_token %}
+  <input
+    name="name"
+    type="text"
+    class="feedback-input black-text"
+    placeholder="Name"
+  />
+  <input
+    name="email"
+    type="text"
+    class="feedback-input black-text"
+    placeholder="Email"
+  />
+  <textarea
+    name="subject"
+    class="feedback-input black-text"
+    placeholder="Comment"
+  ></textarea>
+  <input type="submit" value="SUBMIT" />
+</form>
+
+{%endblock content%}
