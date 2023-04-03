@@ -3,32 +3,42 @@
 
 {% block content %}
 {% include 'shop/partials/topside.html' %}
-<div class="container">
 <div class="row my-4">
     <div class="col-md-4"></div>
     <div class="col-md-8">
         <table class="table bg-white">
-            <thead class="bg-warning text-black">
+            <thead class="bg-info text-white">
                 <tr>
+                    <th scope="col">Order By</th>
                     <th scope="col">Product</th>
-                    <th scope="col">Category</th>
+                    <th scope="col">Price</th>
                     <th scope="col">Quantity</th>
-                    <th scope="col">Odered by</th>
                 </tr>
             </thead>
-            <tbody>
-                {% for order in order %}
-                <tr>
-                    <td>{{ order.name }}</td>
-                    <td>{{ order.name.category }}</td>
-                    <td>{{ order.order_quantity }}</td>
-                    <td>{{ order.customer.username }}</td>
+            <tbody class="bg-white text-black">
+                {% for order in object %}
+                <tr  class="">
+                    <td colspan="4"><a href="{{ order.get_absolute_url }}">{{ order.user.username }}</td>
                 </tr>
+                {% for item in order.items.all %}
+                <tr>
+                    <td></td>
+                    <td>{{ item.item.title }}</td>
+                    <td>
+                        {% if item.item.discount_price%}
+                        {{ item.item.discount_price }}
+                        {%else %}
+                        {{item.item.price}}
+                        {% endif %}
+                    </td>
+                    <td>{{ item.quantity }}</td>
+                </tr>
+                    {% endfor %}
+                    
                 {% endfor %}
             </tbody>
         </table>
     </div>
-</div>
 </div>
 
 {% endblock %}

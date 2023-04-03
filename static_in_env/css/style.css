@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Asap+Condensed&display=swap');
+
+
+#img{
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+  
+}
+
+#signup{
+    background-size: cover;
+    background-image: url("{% static 'img/overlays/signup.jpg' %}");
+}
+
+.body .h5{
+    font-family: 'Asap Condensed', sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: inherit; 
+}

@@ -40,13 +40,14 @@ class Payment(models.Model):
 
     def __str__(self):
         return self.user.username
+    
 class comments(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     comment=models.TextField(null=True)
-    images=models.ImageField(upload_to='comment',null=True)
+    images=models.ImageField(upload_to='comment',null=True,blank=True)
     rating=models.FloatField(null=True)
-    like=models.FloatField(null=True)
-    dislike=models.FloatField(null=True)
+    like=models.BooleanField(default=False)
+    dislike=models.BooleanField(default=False)
     
 class Coupon(models.Model):
     code = models.CharField(max_length=15)
@@ -55,7 +56,7 @@ class Coupon(models.Model):
 
     def __str__(self):
         return self.code
-    
+
 class company(models.Model):
     name=models.CharField(max_length=20)
     user = models.OneToOneField(
@@ -65,10 +66,16 @@ class company(models.Model):
     pending_order=models.FloatField(default=0)
     confirmed_order=models.FloatField(default=0)
     no_product=models.FloatField(default=0)
-    coupon=models.ForeignKey(Coupon ,on_delete=models.CASCADE)
+    coupon=models.ForeignKey(Coupon ,on_delete=models.CASCADE, null=True)
+    
+    
+    def __str__(self):
+        return self.name
+        
+        
     
 class Item(models.Model):
-    company=models.OneToOneField(company,on_delete=models.CASCADE, null=True)
+    company=models.ForeignKey(company,on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=100, null=True)
     brand_Name=models.CharField(default='Not defined', max_length=20)
     price = models.FloatField(null=True)
@@ -76,41 +83,53 @@ class Item(models.Model):
     discount_price = models.FloatField(blank=True, null=True)
     category = models.ForeignKey(
         'category', on_delete=models.SET_NULL, blank=True, null=True)
+    subcategory = models.ManyToManyField(
+        'subcategory',blank=True)
     label = models.CharField(choices=LABEL_CHOICES, max_length=1, null=True)
     slug = models.SlugField(unique=True, null=True)
     description_short = models.CharField(max_length=50, blank=True)
     description_long = models.TextField(null=True, blank=True)
-    image = models.ImageField(upload_to='Porduct', null=True)
-    comments=models.ForeignKey(comments,on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='Porduct', default="../static/img/image_not_available.png")
+    comments=models.ForeignKey(comments,on_delete=models.CASCADE, null=True , blank=True)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title
 
     def get_absolute_url(self):
-        return reverse("core:product", kwargs={
+        return reverse("user:product", kwargs={
             'slug': self.slug
         })
 
     def get_add_to_cart_url(self):
-        return reverse("core:add-to-cart", kwargs={
+        return reverse("user:add-to-cart", kwargs={
             'slug': self.slug
         })
 
     def get_remove_from_cart_url(self):
-        return reverse("core:remove-from-cart", kwargs={
+        return reverse("user:remove-from-cart", kwargs={
             'slug': self.slug
         })
+        
         
 class category(models.Model):
     category = models.CharField(max_length=25, unique=True)
     slug = models.SlugField(unique=True)
     description = models.TextField()
-    image = models.ImageField(blank=True, null=True)
+    image = models.ImageField(upload_to='Category', null=True)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.category
+    
+class subcategory(models.Model):
+    main=models.ManyToManyField(category)
+    name=models.CharField(max_length=25, unique=True)
+    slug=models.SlugField(unique=True)
+    is_active=models.BooleanField(default=True)
+    
+    def __str__(self):
+        return self.name
 
 class OrderItem(models.Model):
     user = models.ForeignKey(User,
@@ -180,5 +199,52 @@ class Order(models.Model):
         if self.coupon:
             total -= self.coupon.amount
         return total
-    
+    def get_absolute_url(self):
+        return reverse("shop:order_view", kwargs={
+            'pk': self.id
+        })
+
+class AboutUs(models.Model):
+    user = models.CharField(max_length=100)
+    about_us = models.TextField()
+    # resume= forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
+    slug = models.SlugField(unique=True)
+    work = models.CharField(max_length=20)
+    email = models.EmailField()
+    image = models.ImageField(upload_to='authorImg', blank=True)
+    resume = models.FileField(upload_to='resume', blank=True)
+    linkedin_url = models.CharField(max_length=255, null=True, blank=True)
+    instagram_url = models.CharField(max_length=255, null=True, blank=True)
+    Youtube_url = models.CharField(max_length=255, null=True, blank=True)
+    Facebook_url = models.CharField(max_length=255, null=True, blank=True)
+    github_url = models.CharField(max_length=255, null=True, blank=True)
+    other = models.CharField(max_length=255, null=True, blank=True)
+    project_Img = models.ImageField(upload_to='project_images', blank=True)
+
+    def __str__(self):
+        return self.user
+
+    class Meta:
+        verbose_name_plural = 'About Us'
+
+
+class ContactForm(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    subject = models.TextField()
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = 'Contact Form'
+        
+class Refund(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    reason = models.TextField()
+    accepted = models.BooleanField(default=False)
+    email = models.EmailField()
+
+    def __str__(self):
+        return f"{self.pk}"
 

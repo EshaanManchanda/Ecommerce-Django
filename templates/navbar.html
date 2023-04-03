@@ -1,68 +1,63 @@
 {% load cart_template_tags %}
-<nav class="navbar fixed-top navbar-expand-lg navbar-light bg-warning scrolling-navbar">
-  <div class="container">
 
-    <!-- Brand -->
-    <a class="navbar-brand waves-effect" href="/">
-      <strong class="dark-text">Tech Love V</strong>
-    </a>
-
-    <!-- Collapse -->
+<nav class="navbar fixed-top navbar-expand-lg bg-white border-0">
+  <div class="container-fluid mt-2">
+      <a class="navbar-brand ms-4">Tech Love V</a>
+       <!-- Collapse -->
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
-    <!-- Links -->
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-
-      <!-- Left -->
-      {% comment%}<ul class="navbar-nav mr-auto">
-         <li class="nav-item active">
-          <a class="nav-link waves-effect" href="/">Home
-            <span class="sr-only">(current)</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link waves-effect" href="/checkout">
-            Checkout</a>
-        </li> 
-      </ul>{% endcomment%}
-
-      <!-- Right -->
-      <ul class="navbar-nav nav-flex-icons">
-        {% if request.user.is_authenticated %}
-        <li class="nav-item">
-          <a href="{% url 'user:order-summary' %}" class="nav-link waves-effect">
-            <span class="badge red z-depth-1 mr-1"> {{ request.user|cart_item_count }} </span>
-            <i class="fas fa-shopping-cart"></i>
-            <span class="clearfix d-none d-sm-inline-block"> Cart </span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link waves-effect" href="{% url 'user:logout' %}">
-            <span class="clearfix  d-sm-inline-block"> Logout </span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link waves-effect" href="">
-            <span class="clearfix  d-sm-inline-block"> {{request.user}} </span>
-          </a>
-        </li>
-        {% else %}
-        <li class="nav-item">
-          <a class="nav-link waves-effect" href="{% url 'user:login' %}">
-            <span class="clearfix d-sm-inline-block"> Login </span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link waves-effect" href="{% url 'user:register' %}">
-            <span class="clearfix d-sm-inline-block"> Signup </span>
-          </a>
-        </li>
-        {% endif %}
-      </ul>
-    </div>
-
+        <!-- Left -->
+        <ul class="navbar-nav mr-auto">
+           <!-- <li class="nav-item active">
+            <a class="nav-link waves-effect" href="/">Home
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link waves-effect" href="/checkout">
+              Checkout</a>
+          </li>  -->
+        </ul>
+  
+        <!-- Right -->
+        <ul class="navbar-nav nav-flex-icons">
+          {% if request.user.is_authenticated %}
+          <li class="nav-item">
+            <a href="{% url 'user:order-summary' %}" class="nav-link waves-effect">
+              <span class="badge red z-depth-1 mr-1"> {{ request.user|cart_item_count }} </span>
+              <i class="fas fa-shopping-cart"></i>
+              <span class="clearfix d-none d-sm-inline-block"> Cart </span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link waves-effect" href="{% url 'user:logout' %}">
+              <button type="button" class="btn text-warning"> LOGOUT </button>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link waves-effect" href="">
+              <span class="clearfix  d-sm-inline-block"> {{request.user}} </span>
+            </a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link waves-effect" href="{% url 'user:login' %}">
+              <button type="button" class="btn text-primary"> LOGIN </button>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link waves-effect" href="{% url 'user:register' %}">
+              <button type="button" class="btn text-danger"> SIGNIN </button>
+            </a>
+          </li>
+          {% endif %}
+        </ul>
+        
+      </div>
   </div>
+
 </nav>

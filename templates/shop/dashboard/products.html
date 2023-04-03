@@ -1,0 +1,124 @@
+{% extends 'shop/partials/base.html' %}
+{% block title %}Products Page{% endblock %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+{% include 'shop/partials/topside.html' %}
+<div class="row my-4">
+    <div class="col-md-4">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        <div class="card ms-2">
+            <form method="POST" action="">
+                {% csrf_token %}
+                <div class="card-body mt-3 text-center">
+                    <input name="company" value="{{company.id}} " type="text" readonly="True"><br>
+                    <label class="mt-2">Add New Product</label>
+                    <div class="form-floating  mb-3 col-10 mt-4">
+                        {{form.title.errors}}
+                        <input type="text" class="form-control" id="floatingInput" placeholder="text" name="title">
+                        <label for="floatingInput" class="ms-2">Name</label>
+                    </div>
+                    <div class="form-floating mb-3 col-10">
+                        {{form.quantity.errors}}
+                        <input type="number" class="form-control" id="floatingInput" placeholder="text" name="quantity">
+                        <label for="floatingInput" class="ms-2">Quantity</label>
+                    </div>
+                    <div class="form-floating mb-3 col-10">
+                        {{form.brand_Name.errors}}
+                        <input type="text" class="form-control" id="floatingInput" placeholder="text" name="brand_Name">
+                        <label for="floatingInput" class="ms-2">Brand Name</label>
+                    </div>
+                    <div class="form-floating mb-3 col-10">
+                        {{form.price.errors}}
+                        <input type="number" class="form-control" id="floatingInput" placeholder="text" name="price">
+                        <label for="floatingInput" class="ms-2">Price</label>
+                    </div>
+                    <div class="form-floating mb-3 col-10">
+                        {{form.discount_price.errors}}
+                        <input type="number" class="form-control" id="floatingInput" placeholder="text" name="price">
+                        <label for="floatingInput" class="ms-2">Discounted Price</label>
+                    </div>
+                    <div class="form-floating mb-3 col-10">
+                        {{form.category.errors}}
+                        {{form.category}}
+                    </div>
+                    <div class="form-floating mb-3 col-10">
+                        {{form.subcategory.errors}}
+                        {{form.subcategory}}
+                    </div>
+                    <div class="form-floating mb-3 col-10">
+                        {{form.label.errors}}
+                        {{form.label}}
+                    </div>
+                    <div class="form-floating mb-3 col-10">
+                        {{form.slug.errors}}
+                        <input type="text" class="form-control" id="floatingInput" placeholder="text" name="slug">
+                        <label for="floatingInput" class="ms-2">Slug</label>
+                    </div>
+                    <div class="form-floating mb-3 col-10">
+                        {{form.description_short.errors}}
+                        <input type="text" class="form-control" id="floatingInput" placeholder="text" name="description_short">
+                        <label for="floatingInput" class="ms-2">Short Description</label>
+                    </div>
+                    <div class="form-floating mb-3 col-10">
+                        {{form.description_long.errors}}
+                        <textarea class="form-control" id="floatingInput" placeholder="text" name="description_long"></textarea>
+                        <label for="floatingInput" class="ms-2">Lone Description</label>
+                    </div>
+                    <div class="form-floating mb-3 col-10">
+                        {{form.image.errors}}
+                        {{form.image}}
+                    </div>
+                    <div class="form-floating mb-3 col-10">
+                        {{form.is_active.errors}}
+                        {{form.is_active.label}}<br>
+                        {{form.is_active}}
+                    </div>
+                    <div class="d-grid gap-2 col-10 mx-auto mt-5">
+                        <input type="submit" class="btn btn-outline-danger w-75" value="Add">
+                        <h6 class="text-center">-------------------- or ---------------------</h6>
+                        <i class="fa-brands fa-google text-center" style="color: #000000;"><i class="fa-brands fa-facebook ms-3"
+                                style="color: #000000;"></i></i>
+                
+                    </div>
+                    {{form.errors}}
+                
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <table class="table bg-white">
+            <thead class="bg-info text-white">
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Activity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in product %}
+                <tr>
+                    <td>{{ product.title }}</td>
+                    <td>{{ product.category }}</td>
+                    <td>{{ product.quantity }}</td>
+                    <td>
+                        <a class="btn btn-info btn-sm mr-2"
+                            href="{% url 'shop:dashboard-products-edit' product.id %}">Edit</a>
+                        <a class="btn btn-danger btn-sm ml-2"
+                            href="{% url 'shop:dashboard-products-delete' product.id %}">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

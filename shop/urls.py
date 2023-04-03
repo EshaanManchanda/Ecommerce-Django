@@ -2,14 +2,27 @@
 app_name = 'shop'
 from django.contrib import admin
 from django.urls import path,include
-from . import views
+# from django.contrib.auth import views as auth_view
+from .views import registerPage,index,employee,products,OrderView,loginPage,logoutUser,product_delete,product_detail,product_edit,customers,customer_detail,ItemDetailView
 
 urlpatterns = [
-    path('', views.index, name='shop-index'),
-    path('employee/', views.employee, name='shop-employee'),
-    path('product/', views.product, name='shop-product'),
-    path('order/', views.order, name='shop-order'),
-    path('login/', views.loginPage, name='account_login'),
-    path('signup/', views.registerPage, name='account_signup'),
-    path('logout/', views.logoutUser, name='account_logout'),
+    path('', index, name='shop-index'),
+    path('products/', products, name='dashboard-products'),
+    path('employees/', products, name='shop-employee'),
+    path('products/delete/<int:pk>/', product_delete,
+         name='dashboard-products-delete'),
+    path('products/detail/<int:pk>/', product_detail,
+         name='dashboard-products-detail'),
+    path('products/edit/<int:pk>/', product_edit,
+         name='dashboard-products-edit'),
+    path('order/<pk>/', ItemDetailView.as_view(), name='order_view'),
+    path('customers/', customers, name='dashboard-customers'),
+    path('customers/detial/<int:pk>/', customer_detail,
+         name='dashboard-customer-detail'),
+    path('order/',OrderView.as_view(), name='dashboard-order'),
+    path('login/', loginPage, name='account_login'),
+    # path('login/', auth_view.LoginView.as_view(), name='account_login'),
+    path('signup/', registerPage, name='account_signup'),
+    path('logout/', logoutUser, name='account_logout'),
+    # path('logout/', auth_view.LogoutView.as_view(), name='account_logout'),
 ]

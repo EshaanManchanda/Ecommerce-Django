@@ -1,73 +1,65 @@
-<nav
-  class="navbar fixed-top navbar-expand-lg navbar-light bg-warning scrolling-navbar"
->
-  <div class="container">
-    <!-- Brand -->
-    <a class="navbar-brand waves-effect" href="{% url 'shop:shop-index' %}">
-      <strong class="dark-text">Tech Love V</strong>
-    </a>
-
-    <!-- Collapse -->
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-toggle="collapse"
-      data-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
+{%comment %}
+<nav class="navbar">
+    <div class="container-fluid mt-2">
+        <a class="navbar-brand ms-4">Tech Love V</a>
+        <div class="d-grid d-flex justify-content-md-end me-3">
+            <a href="{% url 'shop:account_login' %}"></a><button type="button" class="btn text-primary me-1"> LOG IN </button></a>
+            <a href="{% url 'shop:account_signup' %}"></a><button type="button" class="btn text-danger ms-1"> SIGN IN </button></a>
+        </div>
+    </div>
+</nav>
+{% endcomment %}
+<nav class="navbar fixed-top navbar-expand-lg navbar-light bg-white">
+    <div class="container-fluid mt-2">
+        <a class="navbar-brand ms-4">Tech Love V</a>
+         <!-- Collapse -->
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-
-    <!-- Links -->
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <!-- Left -->
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link waves-effect" href="{% url 'shop:shop-index' %}"
-            >Dashboard
-            <span class="sr-only">(current)</span>
-          </a>
-        </li>
-      </ul>
-
-      <!-- Right -->
-      <ul class="navbar-nav nav-flex-icons">
-        {% if request.user.is_authenticated %}
-        <li class="nav-item">
-          <a class="nav-link waves-effect" href="{% url 'shop:account_logout' %}">
-            <span class="clearfix d-sm-inline-block"> Logout </span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link waves-effect" >
-            <span class="clearfix d-sm-inline-block"> {{request.user}} </span>
-          </a>
-        </li>
-        {% else %}
-        <li class="nav-item">
-          <a class="nav-link waves-effect" href="{% url 'shop:account_login' %}">
-            <span class="clearfix d-sm-inline-block"> Login </span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link waves-effect" href="{% url 'shop:account_login' %}">
-            <span class="clearfix d-sm-inline-block"> Employee Login </span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link waves-effect" href="{% url 'shop:account_signup' %}">
-            <span class="clearfix d-sm-inline-block"> Signup </span>
-          </a>
-        </li>
-        {% endif %}
-        {% comment %} <li class="nav-item">
-          <a class="nav-link waves-effect" href="{% url 'core:aboutus' %}">
-            <span class="clearfix d-sm-inline-block"> About Us </span>
-          </a>
-        </li>{% endcomment %}
-      </ul>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+  
+          <!-- Left -->
+          <ul class="navbar-nav mr-auto">
+             <!-- <li class="nav-item active">
+              <a class="nav-link waves-effect" href="/">Home
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link waves-effect" href="/checkout">
+                Checkout</a>
+            </li>  -->
+          </ul>
+    
+          <!-- Right -->
+          <ul class="navbar-nav nav-flex-icons">
+            {% if request.user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link waves-effect" href="{% url 'shop:account_logout' %}">
+                <button type="button" class="btn text-warning"> LOGOUT </button>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link waves-effect" href="">
+                <span class="clearfix  d-sm-inline-block"> {{request.user}} </span>
+              </a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link waves-effect" href="{% url 'shop:account_login' %}">
+                <button type="button" class="btn text-primary"> LOGIN </button>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link waves-effect" href="{% url 'shop:account_signup' %}">
+                <button type="button" class="btn text-danger"> SIGNIN </button>
+              </a>
+            </li>
+            {% endif %}
+          </ul>
+          
+        </div>
     </div>
-  </div>
-</nav>
+  
+  </nav>
