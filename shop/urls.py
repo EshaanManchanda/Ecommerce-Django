@@ -3,7 +3,7 @@ app_name = 'shop'
 from django.contrib import admin
 from django.urls import path,include
 # from django.contrib.auth import views as auth_view
-from .views import registerPage,index,employee,products,OrderView,loginPage,logoutUser,product_delete,product_detail,product_edit,customers,customer_detail,ItemDetailView
+from .views import registerPage,index,employee,products,OrderView,loginPage,logoutUser,product_delete,product_detail,product_edit,employee,employee_detail,ItemDetailView
 
 urlpatterns = [
     path('', index, name='shop-index'),
@@ -16,8 +16,8 @@ urlpatterns = [
     path('products/edit/<int:pk>/', product_edit,
          name='dashboard-products-edit'),
     path('order/<pk>/', ItemDetailView.as_view(), name='order_view'),
-    path('customers/', customers, name='dashboard-customers'),
-    path('customers/detial/<int:pk>/', customer_detail,
+    path('customers/', employee, name='dashboard-customers'),
+    path('customers/detial/<int:pk>/', employee_detail,
          name='dashboard-customer-detail'),
     path('order/',OrderView.as_view(), name='dashboard-order'),
     path('login/', loginPage, name='account_login'),

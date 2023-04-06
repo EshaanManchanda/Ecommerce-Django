@@ -43,7 +43,7 @@ def index(request):
     return render(request, 'shop/dashboard/index.html', context)
 
 
-@login_required(login_url='user-login')
+@login_required(login_url='shop:account_login')
 def products(request):
     product = Product.objects.all()
     product_count = product.count()
@@ -74,7 +74,7 @@ def products(request):
     return render(request, 'shop/dashboard/products.html', context)
 
 
-@login_required(login_url='user-login')
+@login_required(login_url='shop:account_login')
 def product_detail(request, pk):
     item = Product.objects.get(id=pk)
     context = {
@@ -83,9 +83,9 @@ def product_detail(request, pk):
     return render(request, 'shop/dashboard/products_detail.html', context)
 
 
-@login_required(login_url='user-login')
+@login_required(login_url='shop:account_login')
 @allowed_users(allowed_roles=['shop'])
-def customers(request):
+def employee(request):
     customer = User.objects.filter(groups=2)
     customer_count = customer.count()
     product = Product.objects.all()
@@ -101,9 +101,9 @@ def customers(request):
     return render(request, 'shop/dashboard/customers.html', context)
 
 
-@login_required(login_url='user-login')
+@login_required(login_url='shop:account_login')
 @allowed_users(allowed_roles=['shop'])
-def customer_detail(request, pk):
+def employee_detail(request, pk):
     customer = User.objects.filter(groups=2)
     customer_count = customer.count()
     product = Product.objects.all()
@@ -121,7 +121,7 @@ def customer_detail(request, pk):
     return render(request, 'dashboard/customers_detail.html', context)
 
 
-@login_required(login_url='user-login')
+@login_required(login_url='shop:account_login')
 @allowed_users(allowed_roles=['shop'])
 def product_edit(request, pk):
     item = Product.objects.get(id=pk)
@@ -138,7 +138,7 @@ def product_edit(request, pk):
     return render(request, 'shop/dashboard/products_edit.html', context)
 
 
-@login_required(login_url='user-login')
+@login_required(login_url='shop:account_login')
 @allowed_users(allowed_roles=['shop'])
 def product_delete(request, pk):
     item = Product.objects.get(id=pk)

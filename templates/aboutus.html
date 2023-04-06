@@ -1,9 +1,14 @@
-{% extends "base2.html" %} {% block content %} {% comment %}<a
-  href="{% url 'core:author' user.slug %}"
+{% extends "base2.html" %} 
+{% load static %}
+{% block extra_head %}
+<link href="{% static 'css/stylesheet.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %} {% comment %}<a
+  href="{% url 'author' user.slug %}"
   >{{user.user}}</a
 >
 {% endcomment %} {% comment %}
-<a href="{% url 'core:aboutus' user.user %}">{{user.user}}</a> {%endcomment %}
+<a href="{% url 'aboutus' user.user %}">{{user.user}}</a> {%endcomment %}
 <div class="container_about">
   <div class="d-flex">
     {% for user in data %}
@@ -11,7 +16,7 @@
       <div class="card-img">
         <div class="flip-card-inner">
           <div class="flip-card-front">
-            <a href="{% url 'core:author' user.slug %}">
+            <a href="{% url 'author' user.slug %}">
               <img src="{{user.image.url}}" alt="{{user.user}}" />
             </a>
           </div>
@@ -19,7 +24,7 @@
       </div>
 
       <div class="card-body text-center">
-        <a href="{% url 'core:author' user.slug %}" class="black-text">
+        <a href="{% url 'author' user.slug %}" class="black-text">
           <h3>{{user.user}}</h3>
         </a>
         <small>{{user.work}}</small>

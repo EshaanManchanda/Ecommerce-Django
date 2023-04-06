@@ -21,6 +21,23 @@ from django.core.mail import EmailMessage
 from django.conf import settings
 from django.template.loader import render_to_string
 
+class Author(DetailView):
+    model = AboutUs
+    template_name = "author.html"
+
+def aboutus(request):
+    data =AboutUs.objects.all()
+    if request.method == "POST":
+        ContactF = ContactForm()
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        subject = request.POST.get('subject')
+        ContactF.name = name
+        ContactF.email = email
+        ContactF.subject = subject
+        ContactF.save()
+        messages.success(request, "Successfully submitted you form")
+    return render(request, "aboutus.html", {'data': data})
 
 def successful(request):
     template = render_to_string(
@@ -56,7 +73,6 @@ def is_valid_form(values):
 
 class HomeView(ListView):
     # model = Item
-    paginate_by = 8
     template_name = "home.html"
 
     def get_context_data(self, **kwargs):
@@ -142,7 +158,7 @@ class ItemDetailView(DetailView):
     template_name = "product.html"
 
 
-@login_required
+@login_required(login_url='user:login')
 def add_to_cart(request, slug):
     item = get_object_or_404(Item, slug=slug)
     order_item, created = OrderItem.objects.get_or_create(
@@ -174,7 +190,7 @@ def add_to_cart(request, slug):
         return redirect("user:order-summary")
 
 
-@login_required
+@login_required(login_url='user:login')
 def remove_from_cart(request, slug):
     item = get_object_or_404(Item, slug=slug)
     order_qs = Order.objects.filter(
@@ -202,7 +218,7 @@ def remove_from_cart(request, slug):
         return redirect("user:product", slug=slug)
 
 
-@login_required
+@login_required(login_url='user:login')
 def remove_single_item_from_cart(request, slug):
     item = get_object_or_404(Item, slug=slug)
     order_qs = Order.objects.filter(
@@ -315,6 +331,7 @@ class FileFieldFormView(FormView):
 
 
 class CheckoutView(View):
+    @login_required(login_url='user:login') 
     def get(self, *args, **kwargs):
         try:
             order = Order.objects.get(user=self.request.user, ordered=False)

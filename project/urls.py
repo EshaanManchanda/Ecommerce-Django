@@ -17,11 +17,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path,include
+from user.views import aboutus,Author
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('shop/', include('shop.urls', namespace='shop')),
     path('delivery/', include('delivery.urls', namespace='delivery')),
+    path('shop/', include('shop.urls', namespace='shop')),
+    path('aboutus/', aboutus, name='aboutus'),
+    path('aboutus/<slug>', Author.as_view(), name='author'),
     path('', include('user.urls', namespace='user')),
 ]
 if settings.DEBUG:
