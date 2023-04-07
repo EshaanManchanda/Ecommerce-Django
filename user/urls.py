@@ -1,4 +1,4 @@
-from .views import HomeView, registerPage, loginPage, logoutUser, OrderSummaryView, CatView, CheckoutView, AboutUs, Author, ItemDetailView, add_to_cart, AddCouponView, remove_from_cart, remove_single_item_from_cart, PaymentView, RequestRefundView
+from .views import HomeView, registerPage, loginPage, logoutUser, OrderSummaryView, CatView, CheckoutView, AboutUs, Author, ItemDetailView, add_to_cart, AddCouponView, remove_from_cart, remove_single_item_from_cart, PaymentView, RequestRefundView,subCatView
 from django.urls import path, include
 from django.contrib import admin
 app_name = 'user'
@@ -9,6 +9,7 @@ urlpatterns = [
     path('login/', loginPage, name="login"),
     path('logout/', logoutUser, name="logout"),
     path('category/<slug>', CatView.as_view(), name='category'),
+    path('subcategory/<slug>', subCatView.as_view(), name='subcategory'),
     path('checkout/', CheckoutView.as_view(), name='checkout'),
     path('aboutus/', AboutUs, name='aboutus'),
     path('aboutus/<slug>', Author.as_view(), name='author'),

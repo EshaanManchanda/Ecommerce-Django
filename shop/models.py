@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from django.shortcuts import get_object_or_404, reverse
 from django.contrib.auth.models import User
 from django_countries.fields import CountryField
@@ -92,6 +93,7 @@ class Item(models.Model):
     image = models.ImageField(upload_to='Porduct', default="../static/img/image_not_available.png")
     comments=models.ForeignKey(comments,on_delete=models.CASCADE, null=True , blank=True)
     is_active = models.BooleanField(default=True)
+    date_published = models.DateTimeField(default=timezone.now())
 
     def __str__(self):
         return self.title
@@ -130,7 +132,15 @@ class subcategory(models.Model):
     
     def __str__(self):
         return self.name
+class Slide(models.Model):
+    caption1 = models.CharField(max_length=100)
+    caption2 = models.CharField(max_length=100)
+    link = models.CharField(max_length=100)
+    image = models.ImageField(help_text="Size: 1920x570")
+    is_active = models.BooleanField(default=True)
 
+    def __str__(self):
+        return "{} - {}".format(self.caption1, self.caption2)
 class OrderItem(models.Model):
     user = models.ForeignKey(User,
                              on_delete=models.CASCADE)

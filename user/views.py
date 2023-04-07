@@ -16,7 +16,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, View, TemplateView, FormView
 from .models import wishlist,UserProfile
-from shop.models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, AboutUs, ContactForm, category as Category,company
+from shop.models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, AboutUs, ContactForm, category as Category,company,subcategory
 from django.core.mail import EmailMessage
 from django.conf import settings
 from django.template.loader import render_to_string
@@ -80,6 +80,7 @@ class HomeView(ListView):
         context.update({
             'category': Category.objects.order_by('category'),
             'item': Item.objects.all(),
+            'time':timezone.now(),
         })
         return context
 
@@ -93,12 +94,28 @@ class CatView(ListView):
 
     def get(self, *args, **kwargs):
         category = Category.objects.get(slug=self.kwargs['slug'])
+        sub_cat=subcategory.objects.filter(main=category.id)
         item = Item.objects.filter(category=category, is_active=True)
         context = {
             'object_list': item,
             'category_title': category.category,
             'category_description': category.description,
-            'category_image': category.image
+            'category_image': category.image,
+            'sub_cat':sub_cat,
+        }
+        return render(self.request, "category.html", context)
+
+class subCatView(ListView):
+    paginate_by = 4
+
+    def get(self, *args, **kwargs):
+        category = subcategory.objects.get(slug=self.kwargs['slug'])
+        item = Item.objects.filter(subcategory=category, is_active=True)
+        context = {
+            'object_list': item,
+            'category_title': category.name,
+            # 'category_description': category.description,
+            # 'category_image': category.image,
         }
         return render(self.request, "category.html", context)
 

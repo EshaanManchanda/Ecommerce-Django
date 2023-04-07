@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block head_title %}Category | {{ category_title }}{% endblock %}
 {% load category_template_tags %}
 {% block content %}
 <style type="text/css">
@@ -23,7 +24,7 @@
 	<!-- Title Page -->
 	<section class="bg-category-page p-t-50 p-b-40 flex-col-c-m" style="background-image: url(/media/{{ category_image }});">
 		<h2 class="l-text2 t-center">
-			{{ category_category }}
+			{{ category_title }}
 		</h2>
 		<p class="m-text13 t-center">
 			{{ category_description }}
@@ -44,12 +45,18 @@
 
 						<ul class="p-b-54">
 							<li class="p-t-4">
-								<a href="/shop" class="s-text13 active1">
+								<a href="#" class="s-text13 active1">
 									All
 								</a>
 							</li>
-
-							{% categories_li_a %}
+							{% if sub_cat %}
+							{% for cat in sub_cat%}
+							<li><a href="{% url 'user:subcategory' cat.slug %}">{{cat.name}}</a></li>
+							{% endfor %}
+							{% else %}
+							<li>None </li>
+							{% endif %}
+							{% comment %} {% categories_li_a %} {% endcomment %}
 
 						</ul>
 
@@ -193,9 +200,9 @@
 									</div>
 								</div>
 
-								<div class="block2-txt p-t-20">
+								<div class="block2-txt p-t-20 text-center text-capitalize">
 									<a href="{{item.get_absolute_url}}" class="block2-name dis-block s-text3 p-b-5">
-										{{item.category}}
+										{{item.title}}
 									</a>
 
 									<span class="block2-price m-text6 p-r-5">

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Item,company,Coupon,comments,category,OrderItem,Order,Address,Payment,subcategory,AboutUs
+from .models import Item,company,Coupon,comments,category,OrderItem,Order,Address,Payment,subcategory,AboutUs,Slide
 # Register your models here.
 admin.site.register(Item)
 admin.site.register(AboutUs)
@@ -13,3 +13,5 @@ admin.site.register(OrderItem)
 admin.site.register(Address)
 admin.site.register(Payment)
 admin.site.register(subcategory)
+admin.site.register(Slide)
+
