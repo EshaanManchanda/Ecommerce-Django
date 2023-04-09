@@ -17,7 +17,7 @@
             <form method="POST" action="">
                 {% csrf_token %}
                 <div class="card-body mt-3 text-center">
-                    <input name="company" value="{{company.id}} " type="text" readonly="True"><br>
+                    <input name="company" value="{{company}} " type="text" readonly="True"><br>
                     <label class="mt-2">Add New Product</label>
                     <div class="form-floating  mb-3 col-10 mt-4">
                         {{form.title.errors}}

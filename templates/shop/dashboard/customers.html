@@ -1,9 +1,9 @@
-{% extends 'partials/base.html' %}
+{% extends 'shop/partials/base.html' %}
 {% block title %}Customer Page{% endblock %}
 
 
 {% block content %}
-{% include 'partials/topside.html' %}
+{% include 'shop/partials/topside.html' %}
 <div class="row my-4">
     <div class="col-md-4"></div>
     <div class="col-md-8">
@@ -11,8 +11,8 @@
             <thead class="bg-info text-white">
                 <tr>
                     <th scope="col"></th>
-                    <th scope="col">First</th>
-                    <th scope="col">Phone</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Salary</th>
                     <th scope="col">Email</th>
                 </tr>
             </thead>
@@ -20,10 +20,10 @@
                 {% for customer in customer %}
                 <tr>
                     <th scope="row"><a class="btn btn-info btn-sm"
-                            href="{% url 'dashboard-customer-detail' customer.id %}">View</a></th>
-                    <td>{{ customer.username }}</td>
-                    <td>{{ customer.profile.phone }}</td>
-                    <td>{{ customer.email }}</td>
+                            href="{% url 'shop:dashboard-customer-detail' customer.id %}">View</a></th>
+                    <td>{{ customer.user.username }}</td>
+                    <td>{{ customer.salary }}</td>
+                    <td>{{ customer.user.email }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

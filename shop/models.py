@@ -62,11 +62,9 @@ class company(models.Model):
     name=models.CharField(max_length=20)
     user = models.OneToOneField(
         User, on_delete=models.CASCADE)
-    no_emp=models.FloatField(default=0)
     total_sales=models.FloatField(default=0)
     pending_order=models.FloatField(default=0)
     confirmed_order=models.FloatField(default=0)
-    no_product=models.FloatField(default=0)
     coupon=models.ForeignKey(Coupon ,on_delete=models.CASCADE, null=True)
     
     
@@ -257,4 +255,9 @@ class Refund(models.Model):
 
     def __str__(self):
         return f"{self.pk}"
-
+class Employee(models.Model):
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE)
+    company=models.ForeignKey(company, on_delete=models.CASCADE)
+    salary=models.IntegerField(default=10000)
+    

@@ -1,9 +1,9 @@
-{% extends 'partials/base.html' %}
+{% extends 'shop/partials/base.html' %}
 {% block title %}Customer Detail Page{% endblock %}
 
 
 {% block content %}
-{% include 'partials/topside.html' %}
+{% include 'shop/partials/topside.html' %}
 <div class="row my-4">
     <div class="col-md-4">
 
@@ -23,19 +23,15 @@
                         <tbody>
                             <tr>
                                 <th>Name</th>
-                                <td>{{ customers.username }}</td>
+                                <td>{{ customers.user.username }}</td>
                             </tr>
                             <tr>
                                 <th>Email</th>
-                                <td>{{ customers.email }}</td>
+                                <td>{{ customers.user.email }}</td>
                             </tr>
                             <tr>
-                                <th>Phone</th>
-                                <td>{{ customers.profile.phone }}</td>
-                            </tr>
-                            <tr>
-                                <th>Address</th>
-                                <td>{{ customers.profile.address }}</td>
+                                <th>Salary</th>
+                                <td>{{ customers.salary }}</td>
                             </tr>
                         </tbody>
                     </table>

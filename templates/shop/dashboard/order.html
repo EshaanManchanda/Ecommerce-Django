@@ -16,11 +16,13 @@
                 </tr>
             </thead>
             <tbody class="bg-white text-black">
-                {% for order in object %}
+                
+                {% for order in order %}
+                {% for item in order.items.all %}
+                {% if item.item.company == company %}
                 <tr  class="">
                     <td colspan="4"><a href="{{ order.get_absolute_url }}">{{ order.user.username }}</td>
                 </tr>
-                {% for item in order.items.all %}
                 <tr>
                     <td></td>
                     <td>{{ item.item.title }}</td>
@@ -33,6 +35,7 @@
                     </td>
                     <td>{{ item.quantity }}</td>
                 </tr>
+                {% endif %}
                     {% endfor %}
                     
                 {% endfor %}

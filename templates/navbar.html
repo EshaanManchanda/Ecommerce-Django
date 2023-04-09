@@ -11,13 +11,13 @@
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarScroll">
-                        <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px">
+                        <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height:100px">
                             <li class="nav-item">
                                 <a class="nav-link active" aria-current="page" href="{% url 'user:home' %}">Home</a>
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                                    aria-expanded="">
+                                    aria-expanded="false">
                                     Shopping
                                 </a>
                                 <ul class="dropdown-menu">
@@ -35,19 +35,30 @@
                         </ul>
                         {% if request.user.is_authenticated %}
                         <form class="d-flex" role="search">
-                            <a href="{% url 'user:order-summary' %}" class="nav-link waves-effect">
-                                <span class="badge red z-depth-1 mr-1"> {{ request.user|cart_item_count }} </span>
-                                <i class="fa-sharp fa-solid fa-bag-shopping me-2"></i></a>
-                            <input class="form-control mt-2" type="search" placeholder="Search" aria-label="Search" />
+                            <a href="{% url 'user:order-summary' %}" class="nav-link">
+                                <span class="badge red z-depth-1"> 
+                                    {{ request.user|cart_item_count }} 
+                                </span>
+                                <i class="fa-sharp fa-solid fa-bag-shopping mt-2 me-3" style="color: #2788a0;"></i>
+                            </a>
+                            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
                             <button class="btn btn-outline-primary" type="button">
                                 Search
                             </button>
                         </form>
-                        <a href="{% url 'user:logout' %}">
-                            <button class="btn btn-outline-warning" type="button">
-                                Logout
-                            </button>
-                        </a>
+                        <div class="d-grid gap-2 d-md-block ms-2">
+                            <div class="collapse navbar-collapse" id="navbarScroll">
+                                <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll"
+                                    style="--bs-scroll-height: 100px">
+                                    <li class="nav-item">
+                                        <a href="{% url 'user:logout' %}" class="nav-link text-primary">
+                                            LOGOUT
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
                         {% else %}
                         <div class="d-grid gap-2 d-md-block ms-2">
                             <div class="collapse navbar-collapse" id="navbarScroll">

@@ -129,16 +129,19 @@
             <center>
             <div class="class mt-5">
                 {% if object.linkedin_url %}
-                    <a href="{{object.linkedin_url}}"><i class="fa-brands fa-linkedin-in fa-xl p-2" style="color: #000000;"></i></a>
+                    <a href="{{object.linkedin_url}}" target="_blank"><i class="fa-brands fa-linkedin-in fa-xl p-2"  style="color: #000000;"></i></a>
                 {%endif%}
                 {% if object.github_url %}
-                    <a href="{{object.github_url}}"><i class="fa-brands fa-github fa-xl p-2" style="color: #000000;"></i></a>
+                    <a href="{{object.github_url}}" target="_blank"><i class="fa-brands fa-github fa-xl p-2"  style="color: #000000;"></i></a>
                 {%endif%}
-                {% if object.facebook_url%}
-                    <a href="{{object.facebook_url}}"><i class="fa-brands fa-facebook fa-xl p-2" style="color: #000000;"></i></a>
+                {% if object.Facebook_url%}
+                    <a href="{{object.Facebook_url}}" target="_blank"><i class="fa-brands fa-facebook-f fa-xl p-2" style="color: #000000;"></i></a>
                 {%endif%}
                 {% if object.instagram_url %}
-                    <a href="{{object.instagram_url}}"><i class="fa-brands fa-instagram fa-xl p-2" style="color: #000000;"></i></a>
+                    <a href="{{object.instagram_url}}" target="_blank"><i class="fa-brands fa-instagram fa-xl p-2"  style="color: #000000;"></i></a>
+                {%endif%}
+                {% if object.Youtube_url %}
+                    <a href="{{object.Youtube_url}}" target="_blank"><i class="fa-brands fa-youtube fa-xl p-2" style="color: #000000;"></i></a>
                 {%endif%}
             </div>
         </center>

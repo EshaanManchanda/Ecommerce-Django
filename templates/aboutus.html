@@ -3,16 +3,11 @@
 {% block extra_head %}
 <link href="{% static 'css/stylesheet.css' %}" rel="stylesheet">
 {% endblock %}
-{% block content %} {% comment %}<a
-  href="{% url 'author' user.slug %}"
-  >{{user.user}}</a
->
-{% endcomment %} {% comment %}
-<a href="{% url 'aboutus' user.user %}">{{user.user}}</a> {%endcomment %}
-<div class="container_about">
+{% block content %} 
+<div class="container">
   <div class="d-flex">
     {% for user in data %}
-    <div class="card">
+    <div class="card body">
       <div class="card-img">
         <div class="flip-card-inner">
           <div class="flip-card-front">

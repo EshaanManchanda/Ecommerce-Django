@@ -7,21 +7,28 @@ from .forms import CreateUserForm, OrderForm, ProductForm
 from django.contrib import messages
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
-from .models import company as Company, Item as Product, category as Category, Order
+from .models import company as Company, Item as Product, category as Category, Order,Employee
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DetailView, View
 from .decorators import unauthenticated_user, allowed_users
 
 
 @login_required(login_url='shop:account_login')
-@allowed_users(allowed_roles=['shop'])
+@allowed_users(allowed_roles=['shop', 'employee'])
 def index(request):
     product = Product.objects.all()
+    group=request.user.groups.all()[0].name
+    if group == 'employee':
+        emp_id=Employee.objects.get(user=request.user)
+        company_id=Company.objects.get(id=emp_id.company.id)
+    else:
+        company_id = Company.objects.get(user=request.user)
+    product = Product.objects.all().filter(company=company_id.id)
     product_count = product.count()
-    order = Order.objects.all()
+    order = Order.objects.all().filter(ordered=True , being_delivered=False )
     order_count = order.count()
-    customer = User.objects.filter(groups=2)
-    customer_count = customer.count()
+    employee = Employee.objects.all().filter(company=company_id.id)
+    customer_count = employee.count()
 
     if request.method == 'POST':
         form = OrderForm(request.POST)
@@ -36,6 +43,7 @@ def index(request):
         'form': form,
         'order': order,
         'product': product,
+        'company':company_id,
         'product_count': product_count,
         'order_count': order_count,
         'customer_count': customer_count,
@@ -46,11 +54,12 @@ def index(request):
 @login_required(login_url='shop:account_login')
 def products(request):
     product = Product.objects.all()
+    company_id = Company.objects.get(user=request.user)
+    product = Product.objects.all().filter(company=company_id.id)
     product_count = product.count()
-    customer = User.objects.filter(groups=1)
-    company = Company.objects.get(user=request.user)
-    customer_count = customer.count()
-    order = Order.objects.all()
+    employee = Employee.objects.all().filter(company=company_id.id)
+    customer_count = employee.count()
+    order = Order.objects.all().filter(ordered=True , being_delivered=False )
     order_count = order.count()
     item = Product()
     product_quantity = Product.objects.filter(title='')
@@ -66,7 +75,8 @@ def products(request):
     context = {
         'product': product,
         'form': form,
-        'company': company,
+        'order': order,
+        'company': company_id,
         'customer_count': customer_count,
         'product_count': product_count,
         'order_count': order_count,
@@ -78,7 +88,7 @@ def products(request):
 def product_detail(request, pk):
     item = Product.objects.get(id=pk)
     context = {
-        'item': item
+        'item': item,
     }
     return render(request, 'shop/dashboard/products_detail.html', context)
 
@@ -86,17 +96,20 @@ def product_detail(request, pk):
 @login_required(login_url='shop:account_login')
 @allowed_users(allowed_roles=['shop'])
 def employee(request):
-    customer = User.objects.filter(groups=2)
-    customer_count = customer.count()
-    product = Product.objects.all()
+    company_id = Company.objects.get(user=request.user)
+    employee = Employee.objects.all().filter(company=company_id.id)
+    customer_count = employee.count()
+    product = Product.objects.all().filter(company=company_id.id)
     product_count = product.count()
-    order = Order.objects.all()
+    order = Order.objects.all().filter(ordered=True , being_delivered=False )
     order_count = order.count()
     context = {
-        'customer': customer,
+        'order': order,
+        'customer': employee,
         'customer_count': customer_count,
         'product_count': product_count,
         'order_count': order_count,
+        'company':company_id,
     }
     return render(request, 'shop/dashboard/customers.html', context)
 
@@ -104,21 +117,24 @@ def employee(request):
 @login_required(login_url='shop:account_login')
 @allowed_users(allowed_roles=['shop'])
 def employee_detail(request, pk):
-    customer = User.objects.filter(groups=2)
-    customer_count = customer.count()
-    product = Product.objects.all()
+    company_id = Company.objects.get(user=request.user)
+    employee = Employee.objects.all().filter(company=company_id.id)    
+    customer_count = employee.count()
+    product = Product.objects.all().filter(company=company_id.id)
     product_count = product.count()
-    order = Order.objects.all()
+    order = Order.objects.all().filter(ordered=True , being_delivered=False )
     order_count = order.count()
-    customers = User.objects.get(id=pk)
+    customers = Employee.objects.get(id=pk)
     context = {
+        'order': order,
         'customers': customers,
         'customer_count': customer_count,
         'product_count': product_count,
         'order_count': order_count,
+        'company':company_id,
 
     }
-    return render(request, 'dashboard/customers_detail.html', context)
+    return render(request, 'shop/dashboard/customers_detail.html', context)
 
 
 @login_required(login_url='shop:account_login')
@@ -150,30 +166,33 @@ def product_delete(request, pk):
     }
     return render(request, 'shop/dashboard/products_delete.html', context)
 
+
 class ItemDetailView(DetailView):
     model = Order
     template_name = "shop/dashboard/order_view.html"
-    
+
 class OrderView(LoginRequiredMixin, View):
     def get(self, *args, **kwargs):
         try:
-            order = Order.objects.all()
-            print(order)
+            company_id = Company.objects.get(user=self.request.user)
+            employee = Employee.objects.all().filter(company=company_id.id)
+            customer_count = employee.count()
+            product = Product.objects.all().filter(company=company_id.id)
+            product_count = product.count()
+            order = Order.objects.all().filter(ordered=True , being_delivered=False )
+            order_count = order.count()
 
             context = {
-                'object': order
+                'order': order,
+                'customer_count': customer_count,
+                'product_count': product_count,
+                'order_count': order_count,
+                'company':company_id,
             }
             return render(self.request, 'shop/dashboard/order.html', context)
         except ObjectDoesNotExist:
             messages.warning(self.request, "you do not have any active order")
             return redirect("/")
-
-
-@login_required(login_url='shop:account_login')
-@allowed_users(allowed_roles=['shop'])
-def employee(request):
-    return render(request, 'shop/dashboard/employee.html')
-
 
 @unauthenticated_user
 def registerPage(request):

@@ -1,7 +1,7 @@
 {%comment %}
 <nav class="navbar">
     <div class="container-fluid mt-2">
-        <a class="navbar-brand ms-4">Tech Love V</a>
+        <a href=""class="navbar-brand ms-4">Tech Love V</a>
         <div class="d-grid d-flex justify-content-md-end me-3">
             <a href="{% url 'shop:account_login' %}"></a><button type="button" class="btn text-primary me-1"> LOG IN </button></a>
             <a href="{% url 'shop:account_signup' %}"></a><button type="button" class="btn text-danger ms-1"> SIGN IN </button></a>
@@ -11,7 +11,7 @@
 {% endcomment %}
 <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-white">
     <div class="container-fluid mt-2">
-        <a class="navbar-brand ms-4">Tech Love V</a>
+        <a href="{% url 'shop:shop-index' %}" class="navbar-brand ms-4">Tech Love V</a>
          <!-- Collapse -->
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
       aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

@@ -76,11 +76,14 @@ class HomeView(ListView):
     template_name = "home.html"
 
     def get_context_data(self, **kwargs):
+        pass_day=timezone.now()-timezone.timedelta(days=5)
         context = super(HomeView, self).get_context_data(**kwargs)
         context.update({
             'category': Category.objects.order_by('category'),
             'item': Item.objects.all(),
             'time':timezone.now(),
+            'time_pass':pass_day,
+            
         })
         return context
 
@@ -347,8 +350,7 @@ class FileFieldFormView(FormView):
             return self.form_invalid(form)
 
 
-class CheckoutView(View):
-    @login_required(login_url='user:login') 
+class CheckoutView(View): 
     def get(self, *args, **kwargs):
         try:
             order = Order.objects.get(user=self.request.user, ordered=False)
