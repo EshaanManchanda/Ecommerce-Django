@@ -36,15 +36,13 @@
                         {% if request.user.is_authenticated %}
                         <form class="d-flex" role="search">
                             <a href="{% url 'user:order-summary' %}" class="nav-link">
-                                <span class="badge red z-depth-1"> 
+                                <span class="badge red z-depth-1 me-3"> 
                                     {{ request.user|cart_item_count }} 
                                 </span>
-                                <i class="fa-sharp fa-solid fa-bag-shopping mt-2 me-3" style="color: #2788a0;"></i>
+                                <i class="fa-sharp fa-solid fa-bag-shopping me-3" style="color: #2788a0;"></i>
                             </a>
-                            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-                            <button class="btn btn-outline-primary" type="button">
-                                Search
-                            </button>
+                            <input class="form-control me-2 mt-3"  type="search" placeholder="Search" aria-label="Search" />
+                            <button class="btn btn-outline-primary" style=" width:8rem;" type="submit">Search</button>
                         </form>
                         <div class="d-grid gap-2 d-md-block ms-2">
                             <div class="collapse navbar-collapse" id="navbarScroll">

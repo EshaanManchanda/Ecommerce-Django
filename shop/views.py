@@ -11,7 +11,18 @@ from .models import company as Company, Item as Product, category as Category, O
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DetailView, View
 from .decorators import unauthenticated_user, allowed_users
+from django.db.models import Sum
+from django.utils import timezone
+import datetime
+from dateutil import rrule
+from dateutil.relativedelta import relativedelta
 
+def get_months_between_dates(start_date, end_date):
+    months = []
+    while start_date <= end_date:
+        months.append(start_date.strftime("%B"))
+        start_date += relativedelta(months=1)
+    return months
 
 @login_required(login_url='shop:account_login')
 @allowed_users(allowed_roles=['shop', 'employee'])
@@ -26,6 +37,15 @@ def index(request):
     product = Product.objects.all().filter(company=company_id.id)
     product_count = product.count()
     order = Order.objects.all().filter(ordered=True , being_delivered=False )
+    days=30
+    current_date = datetime.date.today()
+    passed_date = current_date - datetime.timedelta(days=int(days))
+    date_list = [passed_date + datetime.timedelta(days=x) for x in range((current_date-passed_date).days)]
+    months = get_months_between_dates(passed_date, current_date)
+    print(months)
+    total_sales = Order.objects.filter(ordered=True ,being_delivered=True).aggregate(Sum('payment__amount'))['payment__amount__sum']
+    all_order=Order.objects.filter(ordered=True).order_by('ordered_date')
+    print(all_order)
     order_count = order.count()
     employee = Employee.objects.all().filter(company=company_id.id)
     customer_count = employee.count()
@@ -47,6 +67,10 @@ def index(request):
         'product_count': product_count,
         'order_count': order_count,
         'customer_count': customer_count,
+        'total_sales': total_sales,
+        'date_list': date_list,
+        'all_orders': all_order,
+        'months':months,
     }
     return render(request, 'shop/dashboard/index.html', context)
 

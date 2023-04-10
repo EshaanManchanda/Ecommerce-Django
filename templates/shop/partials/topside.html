@@ -1,72 +1,74 @@
-<div class="container ">
-<div class="row mt-5 justify-content-center text-center">
-  <div class="col-md-4 mt-4">
-    <div class="card">
-      <div class="card-header bg-warning text-black">Information</div>
+<div class="col-xl-3 col-sm-6 mb-3">
+  <div class="card text-white bg-primary o-hidden h-100">
       <div class="card-body">
-        <marquee behavior="" direction="">
-          <h3 class="my-4">New Information</h3>
-        </marquee>
+          <div class="card-body-icon">
+              <i class="fa fa-fw fa-comments"></i>
+          </div>
+          <div class="mr-5">New Update!</div>
       </div>
-    </div>
+      <a class="card-footer text-white clearfix small z-1" href="#">
+          <span class="float-left">View Details</span>
+          <span class="float-right">
+              <i class="fa fa-angle-right"></i>
+          </span>
+      </a>
   </div>
-  <div class="col-md-8 mt-4">
-    <div class="card">
-      <div class="card-header bg-warning text-black">Dashboard Statistics</div>
+</div>
+<div class="col-xl-3 col-sm-6 mb-3">
+  <div class="card text-white bg-warning o-hidden h-100">
       <div class="card-body">
-        <div class="row">
-          <div class="col-md-4">
-            <a
-              class="text-decoration-none text-dark"
-              href="{% url 'shop:shop-employee' %}"
-            >
-              <div class="card my-card shadow">
-                <div class="card-body text-center">
-                  <h4>Employee <i class="fas fa-users"></i></h4>
-                  <h3>{{ customer_count }}</h3>
-                </div>
-              </div>
-            </a>
+          <div class="card-body-icon">
+              <i class="fa fa-fw fa-list"></i>
           </div>
-          <div class="col-md-4">
-            <a
-              class="text-decoration-none text-dark"
-              href="{% url 'shop:dashboard-products' %}"
-            >
-              <div class="card my-card shadow">
-                <div class="card-body text-center">
-                  <h4>Products <i class="fas fa-box"></i></h4>
-                  <h3>{{ product_count }}</h3>
-                </div>
-              </div>
-            </a>
+          <div class="mr-5">Employee! {{ customer_count }}</div>
+      </div>
+      <a class="card-footer text-white clearfix small z-1" href="{% url 'shop:shop-employee' %}">
+          <span class="float-left">View Details</span>
+          <span class="float-right">
+              <i class="fa fa-angle-right"></i>
+          </span>
+      </a>
+  </div>
+</div>
+<div class="col-xl-3 col-sm-6 mb-3">
+  <div class="card text-white bg-success o-hidden h-100">
+      <div class="card-body">
+          <div class="card-body-icon">
+              <i class="fa fa-fw fa-shopping-cart"></i>
           </div>
-          <div class="col-md-4">
-            <a
-              class="text-decoration-none text-dark"
-              href="{% url 'shop:dashboard-order' %}"
-            >
-              <div class="card my-card shadow">
-                <div class="card-body text-center">
-                  <h4>Orders <i class="fas fa-shipping-fast"></i></h4>
-                  <h3>
+          <div class="mr-5">Orders! 
                     {% for order in order %}
                     {% for item in order.items.all %}
                     {% if item.item.company == company %}
                     {% if forloop.parentloop.last %}
-                    {{forloop.parentloop.counter}}
+                     {{forloop.parentloop.counter}}
                     {% endif %}
                     {% endif %}
                     {% endfor %}
                     {% endfor %}
-                  </h3>
-                </div>
-              </div>
-            </a>
           </div>
-        </div>
       </div>
-    </div>
+      <a class="card-footer text-white clearfix small z-1" href="{% url 'shop:dashboard-order' %}">
+          <span class="float-left">View Details</span>
+          <span class="float-right">
+              <i class="fa fa-angle-right"></i>
+          </span>
+      </a>
   </div>
 </div>
+<div class="col-xl-3 col-sm-6 mb-3">
+  <div class="card text-white bg-danger o-hidden h-100">
+      <div class="card-body">
+          <div class="card-body-icon">
+              <i class="fa fa-fw fa-support"></i>
+          </div>
+          <div class="mr-5">Products! {{ product_count }}</div>
+      </div>
+      <a class="card-footer text-white clearfix small z-1" href="{% url 'shop:dashboard-products' %}">
+          <span class="float-left">View Details</span>
+          <span class="float-right">
+              <i class="fa fa-angle-right"></i>
+          </span>
+      </a>
+  </div>
 </div>

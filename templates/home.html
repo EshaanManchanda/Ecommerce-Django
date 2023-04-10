@@ -244,6 +244,7 @@ href="{% static 'vendor/lightbox2/css/lightbox.min.css' %}"
       <div class="card-group">
         {% for item in object_list %}
         {% if item.date_published.date <= time.date and item.date_published.date >= time_pass.date %}
+        {% if forloop.counter <= 4 %}
         <div class="card p-2 border-white ">
           <a href="{{ item.get_absolute_url }}"><img src="{{ item.image.url }}" class="card-img-top imagecrd rounded"
               alt="{{ item.image.name }}" /></a>
@@ -267,6 +268,7 @@ href="{% static 'vendor/lightbox2/css/lightbox.min.css' %}"
           </div>
         </div>
         {% endif %}
+        {% endif %}
         {% endfor %}
       </div>
     </div>
@@ -279,7 +281,45 @@ href="{% static 'vendor/lightbox2/css/lightbox.min.css' %}"
       <div class="card-group">
         {% for item in object_list %}
         {% if item.category.slug == "electornic_items" %}
+        {% if forloop.counter <= 4 %}
         <div class="card text-bg-success border-success text-white p-2 ">
+          <a href="{{ item.get_absolute_url }}"><img src="{{item.image.url}}" class="card-img-top imagecrd rounded"
+              alt="{{item.title}}" /></a>
+          <div class="card-body">
+            <h5 class="card-title text-center">
+              <a href="{{ item.get_absolute_url }}" class="text-decoration-none text-capitalize text-white fs-20">{{item.title}}
+                <span class="badge badge-pill {{ item.get_label_display }}-color">New</span>
+              </a>
+              <a href="" class="white-text fs-15">
+                <h5>{{ item.category}}</h5>
+              </a>
+            </h5>
+            <h4 class="font-weight-bold text-center">
+              <strong>Rs. {% if item.discount_price %} {{ item.discount_price }}
+                {% else %} {{ item.price }} {% endif %}
+              </strong>
+            </h4>
+            <p class="card-text text-center">
+              {{item.short_description}}
+            </p>
+          </div>
+        </div>
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end men outflit -->
+<div class="container mt-5">
+  <h1>Men Wearables</h1>
+  <div class="row">
+    <div class="class">
+      <div class="card-group">
+        {% for item in object_list %}
+        {% if item.category.slug == "men_wearable" %}
+        <div class="card text-bg-dark p-2 ">
           <a href="{{ item.get_absolute_url }}"><img src="{{item.image.url}}" class="card-img-top imagecrd rounded"
               alt="{{item.title}}" /></a>
           <div class="card-body">
@@ -307,7 +347,6 @@ href="{% static 'vendor/lightbox2/css/lightbox.min.css' %}"
     </div>
   </div>
 </div>
-<!-- end men outflit -->
 
 
 
