@@ -1,6 +1,7 @@
 import time
 import random
 import string
+import razorpay
 import stripe
 from django.utils import timezone
 from django.shortcuts import get_object_or_404, render, redirect
@@ -21,8 +22,14 @@ from django.core.mail import EmailMessage
 from django.conf import settings
 from django.template.loader import render_to_string
 
+stripe.api_key = settings.STRIPE_SECRET_KEY
+
 class Author(DetailView):
     model = AboutUs
+    template_name = "author.html"
+    
+class profile(DetailView):
+    model = UserProfile
     template_name = "author.html"
 
 def aboutus(request):
@@ -62,6 +69,18 @@ def products(request):
     }
     return render(request, "products.html", context)
 
+def order_history(request,pk):
+    pass_day=timezone.now()-timezone.timedelta(days=5)
+    context = {
+        'category': Category.objects.order_by('category'),
+        'order': Order.objects.all().filter(user=pk).order_by('-ordered_date'),
+        'refund_date':order_date_pass,
+    }
+    return render(request, "order_history.html",context)
+
+def order_date_pass(request,date):
+    pass_day=date-timezone.timedelta(days=7)
+    return pass_day
 
 def is_valid_form(values):
     valid = True
@@ -91,6 +110,10 @@ class HomeView(ListView):
         self.item = Item.objects.filter(is_active=True)
         return self.item
 
+def search(request):
+    q=request.GET['q']
+    data=Item.objects.filter(title__icontains=q)
+    return render(request, 'search.html',{'data':data})   
 
 class CatView(ListView):
     paginate_by = 4

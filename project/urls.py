@@ -18,6 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path,include
 from user.views import aboutus,Author
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,7 +27,7 @@ urlpatterns = [
     path('aboutus/', aboutus, name='aboutus'),
     path('aboutus/<slug>', Author.as_view(), name='author'),
     path('', include('user.urls', namespace='user')),
-]
+    ]
 if settings.DEBUG:
     import debug_toolbar
     urlpatterns += [path('__debug__/', include(debug_toolbar.urls))]

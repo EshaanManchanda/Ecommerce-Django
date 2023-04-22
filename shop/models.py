@@ -51,13 +51,6 @@ class comments(models.Model):
     like=models.BooleanField(default=False)
     dislike=models.BooleanField(default=False)
     
-class Coupon(models.Model):
-    code = models.CharField(max_length=15)
-    amount = models.FloatField()
-    minCartValue = models.FloatField(default=True)
-
-    def __str__(self):
-        return self.code
 
 class company(models.Model):
     name=models.CharField(max_length=20)
@@ -66,13 +59,20 @@ class company(models.Model):
     total_sales=models.FloatField(default=0)
     pending_order=models.FloatField(default=0)
     confirmed_order=models.FloatField(default=0)
-    coupon=models.ForeignKey(Coupon ,on_delete=models.CASCADE, null=True)
     
     
     def __str__(self):
         return self.name
         
         
+class Coupon(models.Model):
+    code = models.CharField(max_length=15)
+    amount = models.FloatField()
+    minCartValue = models.FloatField(default=True)
+    company = models.ForeignKey( company ,on_delete=models.CASCADE,default=1)
+
+    def __str__(self):
+        return self.code
     
 class Item(models.Model):
     company=models.ForeignKey(company,on_delete=models.CASCADE, null=True)
@@ -118,6 +118,7 @@ class category(models.Model):
     slug = models.SlugField(unique=True)
     description = models.TextField()
     image = models.ImageField(upload_to='Category', null=True)
+    sales=models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):

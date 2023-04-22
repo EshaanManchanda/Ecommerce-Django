@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-xi*!&#k=ad=s#ok^c!3c1e4s3%!&tla7l$z)s46k%n5k8kji$$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.29.150']
 
 
 # Application definition
@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'user',
     'delivery',
     'shop',
+    
 ]
 
 MIDDLEWARE = [
@@ -201,3 +202,6 @@ JAZZMIN_SETTINGS = {
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+STRIPE_PUBLIC_KEY = config('STRIPE_TEST_PUBLIC_KEY')
+STRIPE_SECRET_KEY = config('STRIPE_TEST_SECRET_KEY')

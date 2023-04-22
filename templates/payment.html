@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% comment %} {% extends "base.html" %}
 
 {% block extra_head %}
 <style>
@@ -256,8 +256,48 @@ button:hover {
 
 </script>
 
-{% endblock extra_scripts %}
+{% endblock extra_scripts %} {% endcomment %}
 
 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+    <h1>Payment Page</h1>
+    <form action="{% url 'initiate_payment' %}" method="POST">
+        {% csrf_token %}
+        <label for="amount">Amount:</label>
+        <input type="text" name="amount"><br>
+        <button type="submit">Pay Now</button>
+    </form>
+
+    <script>
+        var options = {
+            "key": "YOUR_KEY_ID",
+            "amount": "{{ amount }}",
+            "currency": "INR",
+            "name": "My Company Name",
+            "description": "Payment for Order ID: {{ order_id }}",
+            "handler": function (response){
+                // Redirect to success page or handle the payment success in some other way
+                console.log(response);
+            },
+            "prefill": {
+                "name": "Eshaan",
+                "email": "techlovev@gmail.com",
+                "contact": "8882254201"
+            }
+        };
+        var rzp1 = new Razorpay(options);
+        document.querySelector('form').addEventListener('submit', function(e){
+            e.preventDefault();
+            rzp1.open();
+        });
+    </script>
+</body>
+</html>
 
 

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
@@ -129,13 +129,13 @@ def employee(request):
     order_count = order.count()
     context = {
         'order': order,
-        'customer': employee,
+        'employee': employee,
         'customer_count': customer_count,
         'product_count': product_count,
         'order_count': order_count,
         'company':company_id,
     }
-    return render(request, 'shop/dashboard/customers.html', context)
+    return render(request, 'shop/dashboard/employee.html', context)
 
 
 @login_required(login_url='shop:account_login')
@@ -164,12 +164,13 @@ def employee_detail(request, pk):
 @login_required(login_url='shop:account_login')
 @allowed_users(allowed_roles=['shop'])
 def product_edit(request, pk):
-    item = Product.objects.get(id=pk)
+    item = get_object_or_404(Product, id=pk)
     if request.method == 'POST':
         form = ProductForm(request.POST, instance=item)
         if form.is_valid():
-            form.save()
-            return redirect('shop:dashboard-products')
+            obj = form.save(commit=False)
+            obj.save()
+            return redirect("shop:dashboard-products")
     else:
         form = ProductForm(instance=item)
     context = {

@@ -37,15 +37,15 @@
               <i class="fa fa-fw fa-shopping-cart"></i>
           </div>
           <div class="mr-5">Orders! 
-                    {% for order in order %}
-                    {% for item in order.items.all %}
-                    {% if item.item.company == company %}
-                    {% if forloop.parentloop.last %}
-                     {{forloop.parentloop.counter}}
-                    {% endif %}
-                    {% endif %}
-                    {% endfor %}
-                    {% endfor %}
+            {% for order in order %}
+            {% for order in order.items.all %}
+            {% if item.item.company == company_id %}
+            {% if forloop.parentloop.last %}
+            {{forloop.parentloop.counter}}
+            {% endif %}
+            {% endif%}
+            {% endfor %}
+            {% endfor %}
           </div>
       </div>
       <a class="card-footer text-white clearfix small z-1" href="{% url 'shop:dashboard-order' %}">
