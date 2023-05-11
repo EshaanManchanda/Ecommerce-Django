@@ -1,7 +1,7 @@
 import time
 import random
 import string
-import razorpay
+# import razorpay
 import stripe
 from django.utils import timezone
 from django.shortcuts import get_object_or_404, render, redirect
@@ -16,24 +16,56 @@ from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, View, TemplateView, FormView
-from .models import wishlist,UserProfile
-from shop.models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, AboutUs, ContactForm, category as Category,company,subcategory
+from .models import wishlist, UserProfile
+from shop.models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, AboutUs, ContactForm, category as Category, company, subcategory
 from django.core.mail import EmailMessage
 from django.conf import settings
 from django.template.loader import render_to_string
+from django.contrib.auth.views import PasswordResetView, PasswordResetCompleteView
+from django.contrib.auth import views as auth_views
+from django.urls import reverse_lazy
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
+
+class MyPasswordResetCompleteView(PasswordResetCompleteView):
+    def get_success_url(self):
+        return render(self.request,'unauthorized.html')
+
+
+class MyPasswordResetDoneView(TemplateView):
+    template_name = 'registration/password_reset_done.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            if request.user.groups.all()[0].name == 'customer':
+                return redirect(reverse_lazy('user:login'))
+            elif request.user.groups.all()[0].name == "shop":
+                return redirect(reverse_lazy('shop:account_login'))
+            elif request.user.groups.all()[0].name == 'employee':
+                return redirect(reverse_lazy('shop:account_login'))
+        else:
+            return redirect(reverse_lazy('user:login'))
+
+
+class MyPasswordResetView(PasswordResetView):
+    template_name = 'registration/password_reset_form.html'
+    email_template_name = 'registration/password_reset_email.html'
+    success_url = reverse_lazy('mypasswordresetdoneview')
+    subject_template_name = 'registration/password_reset_subject.txt'
+
 
 class Author(DetailView):
     model = AboutUs
     template_name = "author.html"
-    
+
+
 class profile(DetailView):
     model = UserProfile
     template_name = "author.html"
 
+
 def aboutus(request):
-    data =AboutUs.objects.all()
+    data = AboutUs.objects.all()
     if request.method == "POST":
         ContactF = ContactForm()
         name = request.POST.get('name')
@@ -45,6 +77,7 @@ def aboutus(request):
         ContactF.save()
         messages.success(request, "Successfully submitted you form")
     return render(request, "aboutus.html", {'data': data})
+
 
 def successful(request):
     template = render_to_string(
@@ -69,18 +102,21 @@ def products(request):
     }
     return render(request, "products.html", context)
 
-def order_history(request,pk):
-    pass_day=timezone.now()-timezone.timedelta(days=5)
+
+def order_history(request, pk):
+    pass_day = timezone.now()-timezone.timedelta(days=5)
     context = {
         'category': Category.objects.order_by('category'),
         'order': Order.objects.all().filter(user=pk).order_by('-ordered_date'),
-        'refund_date':order_date_pass,
+        'refund_date': order_date_pass,
     }
-    return render(request, "order_history.html",context)
+    return render(request, "order_history.html", context)
 
-def order_date_pass(request,date):
-    pass_day=date-timezone.timedelta(days=7)
+
+def order_date_pass(request, date):
+    pass_day = date-timezone.timedelta(days=7)
     return pass_day
+
 
 def is_valid_form(values):
     valid = True
@@ -95,14 +131,14 @@ class HomeView(ListView):
     template_name = "home.html"
 
     def get_context_data(self, **kwargs):
-        pass_day=timezone.now()-timezone.timedelta(days=5)
+        pass_day = timezone.now()-timezone.timedelta(days=5)
         context = super(HomeView, self).get_context_data(**kwargs)
         context.update({
             'category': Category.objects.order_by('category'),
             'item': Item.objects.all(),
-            'time':timezone.now(),
-            'time_pass':pass_day,
-            
+            'time': timezone.now(),
+            'time_pass': pass_day,
+
         })
         return context
 
@@ -110,26 +146,29 @@ class HomeView(ListView):
         self.item = Item.objects.filter(is_active=True)
         return self.item
 
+
 def search(request):
-    q=request.GET['q']
-    data=Item.objects.filter(title__icontains=q)
-    return render(request, 'search.html',{'data':data})   
+    q = request.GET['q']
+    data = Item.objects.filter(title__icontains=q)
+    return render(request, 'search.html', {'data': data})
+
 
 class CatView(ListView):
     paginate_by = 4
 
     def get(self, *args, **kwargs):
         category = Category.objects.get(slug=self.kwargs['slug'])
-        sub_cat=subcategory.objects.filter(main=category.id)
+        sub_cat = subcategory.objects.filter(main=category.id)
         item = Item.objects.filter(category=category, is_active=True)
         context = {
             'object_list': item,
             'category_title': category.category,
             'category_description': category.description,
             'category_image': category.image,
-            'sub_cat':sub_cat,
+            'sub_cat': sub_cat,
         }
         return render(self.request, "category.html", context)
+
 
 class subCatView(ListView):
     paginate_by = 4
@@ -227,7 +266,7 @@ def add_to_cart(request, slug):
     else:
         ordered_date = timezone.now()
         order = Order.objects.create(
-            user=request.user,ordered_date=ordered_date)
+            user=request.user, ordered_date=ordered_date)
         order.items.add(order_item)
         messages.info(request, "This item was added to your cart.")
         return redirect("user:order-summary")
@@ -352,10 +391,12 @@ class RequestRefundView(View):
                 messages.info(self.request, "This order does not exist.")
                 return redirect("user:request-refund")
 
+
 class Author(DetailView):
     model = AboutUs
     template_name = "author.html"
-    
+
+
 class FileFieldFormView(FormView):
     form_class = AboutUs
     template_name = 'upload.html'  # Replace with your template.
@@ -373,7 +414,7 @@ class FileFieldFormView(FormView):
             return self.form_invalid(form)
 
 
-class CheckoutView(View): 
+class CheckoutView(View):
     def get(self, *args, **kwargs):
         try:
             order = Order.objects.get(user=self.request.user, ordered=False)

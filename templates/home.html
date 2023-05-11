@@ -112,7 +112,7 @@ href="{% static 'vendor/lightbox2/css/lightbox.min.css' %}"
               <a href="{{ item.get_absolute_url }}" class="text-decoration-none text-capitalize text-black fs-20">{{item.title}}
                 <span class="badge badge-pill {{ item.get_label_display }}-color">New</span>
               </a>
-              <a href="" class="grey-text fs-15">
+              <a href="{% url 'user:category' item.category.slug %}" class="grey-text fs-15">
                 <h5>{{ item.category}}</h5>
               </a>
             </h5>
@@ -149,7 +149,7 @@ href="{% static 'vendor/lightbox2/css/lightbox.min.css' %}"
               <a href="{{ item.get_absolute_url }}" class="text-decoration-none text-capitalize text-white fs-20">{{item.title}}
                 <span class="badge badge-pill {{ item.get_label_display }}-color">New</span>
               </a>
-              <a href="" class="white-text fs-15">
+              <a href="{% url 'user:category' item.category.slug %}" class="white-text fs-15">
                 <h5>{{ item.category}}</h5>
               </a>
             </h5>
@@ -187,7 +187,7 @@ href="{% static 'vendor/lightbox2/css/lightbox.min.css' %}"
               <a href="{{ item.get_absolute_url }}" class="text-decoration-none text-capitalize text-white fs-20">{{item.title}}
                 <span class="badge badge-pill {{ item.get_label_display }}-color">New</span>
               </a>
-              <a href="" class="white-text fs-15">
+              <a href="{% url 'user:category' item.category.slug %}" class="white-text fs-15">
                 <h5>{{ item.category}}</h5>
               </a>
             </h5>

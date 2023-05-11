@@ -19,14 +19,20 @@ from django.contrib import admin
 from django.urls import path,include
 from user.views import aboutus,Author
 from django.contrib.auth import views as auth_views
+from user.views import MyPasswordResetView , MyPasswordResetDoneView ,MyPasswordResetCompleteView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls, name='admin'),
     path('delivery/', include('delivery.urls', namespace='delivery')),
     path('shop/', include('shop.urls', namespace='shop')),
     path('aboutus/', aboutus, name='aboutus'),
     path('aboutus/<slug>', Author.as_view(), name='author'),
     path('', include('user.urls', namespace='user')),
+    path('reset_password/', MyPasswordResetView.as_view(), name='mypasswordresetview'),
+    path('reset_password/done/', MyPasswordResetDoneView.as_view(), name='mypasswordresetdoneview'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='registration/password_reset_confirm.html'), name='password_reset_confirm'),
+    path('password_reset_complete/', MyPasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    
     ]
 if settings.DEBUG:
     import debug_toolbar

@@ -111,6 +111,13 @@
               Profile
             </div>
           </li>
+          <li class="header-cart-item">
+            <div class="header-cart-item-text">
+              <a href="{% url 'mypasswordresetview' %}">
+              Change Password
+              </a>
+            </div>
+          </li>
         </div>
       </div>
     </div>
@@ -162,18 +169,21 @@
                     
                     <li class="header-cart-item ">
                       <div class="header-cart-item-text">
+                        <a href="{% url 'user:order-history' request.user.id %}">
                         View Order
-                      </div>
-                    </li>
-          
-                    <li class="header-cart-item">
-                      <div class="header-cart-item-text">
-                        Address
+                      </a>
                       </div>
                     </li>
                     <li class="header-cart-item">
                       <div class="header-cart-item-text">
                         Profile
+                      </div>
+                    </li>
+                    <li class="header-cart-item">
+                      <div class="header-cart-item-text">
+                        <a href="{% url 'mypasswordresetview' %}">
+                        Change Password
+                        </a>
                       </div>
                     </li>
                   </div>
@@ -217,6 +227,9 @@
               {% endfor %}
             </ul>
             </li>
+            <li class="item-menu-mobile ">
+              <a href="{% url 'aboutus' %}">About Us</a>
+          </li>
 
             {% if request.user.is_authenticated %}
             <li class="item-menu-mobile">
@@ -232,6 +245,7 @@
                 <i class="arrow-main-menu fa fa-angle-right" aria-hidden="true"></i>
             </li>
             {% endif %}
+            
 
         </ul>
     </nav>

@@ -78,7 +78,12 @@ def index(request):
 @login_required(login_url='shop:account_login')
 def products(request):
     product = Product.objects.all()
-    company_id = Company.objects.get(user=request.user)
+    group=request.user.groups.all()[0].name
+    if group == 'employee':
+        emp_id=Employee.objects.get(user=request.user)
+        company_id=Company.objects.get(id=emp_id.company.id)
+    else:
+        company_id = Company.objects.get(user=request.user)
     product = Product.objects.all().filter(company=company_id.id)
     product_count = product.count()
     employee = Employee.objects.all().filter(company=company_id.id)

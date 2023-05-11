@@ -37,10 +37,11 @@
               <i class="fa fa-fw fa-shopping-cart"></i>
           </div>
           <div class="mr-5">Orders! 
-            {% for order in order %}
-            {% for order in order.items.all %}
-            {% if item.item.company == company_id %}
-            {% if forloop.parentloop.last %}
+            
+            {% for orders in order %}
+            {% for item in orders.items.all %}
+            {% if item.item.company.id == company.id %}
+            {% if forloop.last %}
             {{forloop.parentloop.counter}}
             {% endif %}
             {% endif%}

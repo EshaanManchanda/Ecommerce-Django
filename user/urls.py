@@ -24,6 +24,5 @@ urlpatterns = [
     path('payment/<payment_option>/', PaymentView.as_view(), name='payment'),
     path('request-refund/', RequestRefundView.as_view(), name='request-refund'),
     path('profile/<pk>/', profile.as_view(), name='profile'),
-    path('order-history/<pk>/', order_history, name='order-history'),
-    
+    path('order-history/<pk>/', order_history, name='order-history'), 
 ]
