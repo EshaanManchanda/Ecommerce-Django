@@ -6,13 +6,14 @@ import stripe
 from django.utils import timezone
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.forms import UserCreationForm
+from django.db.models import Q
 from .forms import CreateUserForm, CheckoutForm, CouponForm, RefundForm, PaymentForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.contrib.auth import authenticate, login, logout
 from .decorators import unauthenticated_user, allowed_users
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, View, TemplateView, FormView
@@ -24,12 +25,14 @@ from django.template.loader import render_to_string
 from django.contrib.auth.views import PasswordResetView, PasswordResetCompleteView
 from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
+from django.contrib.auth.models import User
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
+
 class MyPasswordResetCompleteView(PasswordResetCompleteView):
     def get_success_url(self):
-        return render(self.request,'unauthorized.html')
+        return render(self.request, 'unauthorized.html')
 
 
 class MyPasswordResetDoneView(TemplateView):
@@ -59,9 +62,11 @@ class Author(DetailView):
     template_name = "author.html"
 
 
-class profile(DetailView):
-    model = UserProfile
-    template_name = "author.html"
+@login_required(login_url='user:login')
+def profileView(request, pk):
+    data = User.objects.get(id=pk)
+    address_s = Address.objects.get(user_id=pk, address_type="S")
+    return render(request, "userProfile.html", {'data': data, 'address': address_s})
 
 
 def aboutus(request):
@@ -101,6 +106,26 @@ def products(request):
         'items': Item.objects.all()
     }
     return render(request, "products.html", context)
+
+
+@login_required
+def wishlist(request):
+    products = Item.objects.filter(users_wishlist=request.user)
+    return render(request, "user_wish_list.html", {"wishlist": products})
+
+
+@login_required
+def add_to_wishlist(request, id):
+    product = get_object_or_404(Item, id=id)
+    if product.users_wishlist.filter(id=request.user.id).exists():
+        product.users_wishlist.remove(request.user)
+        messages.success(request, product.title +
+                         " has been removed from your WishList")
+    else:
+        product.users_wishlist.add(request.user)
+        messages.success(request, "Added " +
+                         product.title + " to your WishList")
+    return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
 
 def order_history(request, pk):
@@ -157,17 +182,26 @@ class CatView(ListView):
     paginate_by = 4
 
     def get(self, *args, **kwargs):
+        price_range = self.request.GET.get('price_range')
+        q = self.request.GET.get('q')
         category = Category.objects.get(slug=self.kwargs['slug'])
         sub_cat = subcategory.objects.filter(main=category.id)
-        item = Item.objects.filter(category=category, is_active=True)
+        if price_range == 'low_to_high':
+            item = Item.objects.filter(category=category, is_active=True).order_by('price')
+        elif price_range == 'high_to_low':
+            item = Item.objects.filter(category=category, is_active=True).order_by('-price')
+        else:
+            item = Item.objects.filter(category=category, is_active=True)
         context = {
             'object_list': item,
             'category_title': category.category,
             'category_description': category.description,
             'category_image': category.image,
             'sub_cat': sub_cat,
+            'price_range': price_range,
         }
         return render(self.request, "category.html", context)
+
 
 
 class subCatView(ListView):

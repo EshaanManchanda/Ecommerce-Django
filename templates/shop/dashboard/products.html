@@ -647,81 +647,17 @@
         <!-- Area Chart Example-->
 
         <div class="row">
-                <div class="col-5 mt-5 mb-5 card" id="card">
-                    <div class="card-header mb-3">Add Product</div>
-                    <div class="mb-3 row">
-                        <label for="inputText" class="col-sm-3 col-form-label">Title</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control border border-dark" id="inputText">
-                        </div>
-                    </div>
-                    <div class="mb-3 row">
-                        <label for="inputNumber" class="col-sm-3 col-form-label">Price</label>
-                        <div class="col-sm-9">
-                            <input type="number" class="form-control border border-dark" id="inputNumber">
-                        </div>
-                    </div>
-                    <div class="mb-3 row">
-                        <label for="inputNumber" class="col-sm-3 col-form-label">Quantity</label>
-                        <div class="col-sm-9">
-                            <input type="number" class="form-control border border-dark" id="inputNumber">
-                        </div>
-                    </div>
-                    <div class="mb-3 row">
-                        <label for="inputNumber" class="col-sm-3 col-form-label">Discount Price</label>
-                        <div class="col-sm-9">
-                            <input type="number" class="form-control border border-dark" id="inputNumber">
-                        </div>
-                    </div>
-                    <div class="mb-3 row">
-                        <label for="inputText" class="col-sm-3 col-form-label">Label</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control border border-dark" id="inputText">
-                        </div>
-                    </div>
-                    <div class="mb-3 row">
-                        <label for="inputText" class="col-sm-3 col-form-label">Slug</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control border border-dark" id="inputText">
-                        </div>
-                    </div>
-                    <div class="mb-3 row">
-                        <label for="exampleFormControlTextarea1" class="form-label" id="desc">Desc</label>
-                        <div class="col-sm-10 ms-5 mb-3">
-                            <textarea class="form-control border border-dark ms-5 " id="exampleFormControlTextarea1" rows="4"></textarea>
-                        </div>
-                        <div class="mb-3 row">
-                            <label for="formFile" class="form-label">Images</label>
-                            <div class="col-sm-10 ms-4">
-                                <input class="form-control ms-5 border border-dark" type="file" id="formFile">
-                            </div>
-                        </div>
-                        <div class="mb-3 row">
-                            <label for="inputText" class="col-sm-3 col-form-label">Active</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control border border-dark" id="inputText">
-                            </div>
-                        </div>
-                        <div class="mb-3 row">
-                            <label for="inputNumber" class="col-sm-3 col-form-label">Category</label>
-                            <div class="col-sm-9">
-                                <input type="number" class="form-control border border-dark" id="inputNumber">
-                            </div>
-                        </div>
-                        <div class="mb-3 row">
-                            <label for="inputText" class="col-sm-3 col-form-label">Brand Name</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control border border-dark" id="inputText">
-                            </div>
-                        </div>
-                        <div class="d-grid gap-2 col-9 mx-auto">
-                            <button class="btn btn-primary" type="button">Add</button>
-                        </div>
-                    </div>
+                <div class="col-4 mt-5 mb-5 card" id="card">
+                    {% comment %} {% include 'shop/dashboard/products_add.html' %} {% endcomment %}
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <input class="btn btn-info" type="submit" value="Confirm">
+                    </form>
                 </div>
 
             <!-- Example DataTables Card-->
-            <div class="col-7 mt-5">
+            <div class="col-8 mt-5">
                 <div class="card mb-5">
                     <div class="card-header">
                         <i class="fa fa-table"></i> Data Table Example
@@ -752,7 +688,7 @@
                                         </td>
                                         <td>{{ product.quantity}}</td>
                                         <td>{{product.is_active}}</td>
-                                        <td class="col-md-2">
+                                        <td class="col-md-1">
                                             <a href="{% url 'shop:dashboard-products-edit' product.id %}">
                                                 <button type="button" class="btn btn-primary">Update</button>
                                             </a>

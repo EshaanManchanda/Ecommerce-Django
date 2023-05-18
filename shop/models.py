@@ -93,6 +93,7 @@ class Item(models.Model):
     comments=models.ForeignKey(comments,on_delete=models.CASCADE, null=True , blank=True)
     is_active = models.BooleanField(default=True)
     date_published = models.DateTimeField(auto_now_add=True)
+    users_wishlist = models.ManyToManyField(User, related_name="user_wishlist", blank=True)
 
     def __str__(self):
         return self.title
