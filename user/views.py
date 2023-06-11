@@ -1,8 +1,10 @@
 import time
 import random
 import string
-# import razorpay
+import razorpay
 import stripe
+from shop.models import PasswordResetRequest
+import secrets
 from django.utils import timezone
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.forms import UserCreationForm
@@ -19,21 +21,86 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, View, TemplateView, FormView
 from .models import wishlist, UserProfile
 from shop.models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, AboutUs, ContactForm, category as Category, company, subcategory
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMessage, send_mail
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.contrib.auth.views import PasswordResetView, PasswordResetCompleteView
 from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
 from django.contrib.auth.models import User
+from .models import UserProfile
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
+# def forgot_password(request):
+#     if request.method == 'POST':
+#         email = request.POST['email']
+#         try:
+#             user = User.objects.get(email=email)
+#             # Generate a password reset token
+#             token_generator = default_token_generator
+#             uid = urlsafe_base64_encode(force_bytes(user.pk))
+#             token = token_generator.make_token(user)
+#             password_reset_request = PasswordResetRequest.objects.create(user=user, token=token)
+#             # Build the password reset URL
+#             password_reset_url = request.build_absolute_uri(f"{settings.PASSWORD_RESET_CONFIRM_URL}/{uid}/{token}")
+#             # Send password reset email with the token
+#             # Include a link to the password reset form/page with the token as a query parameter
+#             # Create the email context
+#             email_context = {
+#                 'user': user,
+#                 'password_reset_url': password_reset_url,
+#             }
+
+#             # Render the email template
+#             email_body = render_to_string('account/email/password_reset_key_message.html', email_context)
+
+#             # Send the password reset email
+#             send_mail(
+#                 subject=settings.PASSWORD_RESET_EMAIL_SUBJECT,
+#                 message='',
+#                 from_email=settings.PASSWORD_RESET_EMAIL_SENDER,
+#                 recipient_list=[email],
+#                 html_message=email_body,
+#             )
+
+#             # Redirect to a confirmation page
+#             return render(request, 'account/password_reset_done.html')
+#         except User.DoesNotExist:
+#             return render(request, 'account/forgot_password.html', {'invalid_email': True})
+#     return render(request, 'account/forgot_password.html')
+
+# def reset_password(request, token):
+#     try:
+#         password_reset_request = PasswordResetRequest.objects.get(token=token, is_expired=False)
+#         if password_reset_request.created_at < timezone.now() - timezone.timedelta(hours=24):
+#             # Token has expired, handle accordingly
+#             password_reset_request.is_expired = True
+#             password_reset_request.save()
+#             return redirect('expired_token_page')
+        
+#         if request.method == 'POST':
+#             password = request.POST['password']
+#             user = password_reset_request.user
+#             user.set_password(password)
+#             user.save()
+            
+#             # Password updated successfully, mark the token as expired
+#             password_reset_request.is_expired = True
+#             password_reset_request.save()
+            
+#             return redirect(reverse_lazy('user:login'))
+#     except PasswordResetRequest.DoesNotExist:
+#         pass  # Handle invalid or expired token
+#     return render(request, 'account/reset_password.html')
+
 class MyPasswordResetCompleteView(PasswordResetCompleteView):
     def get_success_url(self):
         return render(self.request, 'unauthorized.html')
-
 
 class MyPasswordResetDoneView(TemplateView):
     template_name = 'registration/password_reset_done.html'
@@ -48,7 +115,6 @@ class MyPasswordResetDoneView(TemplateView):
                 return redirect(reverse_lazy('shop:account_login'))
         else:
             return redirect(reverse_lazy('user:login'))
-
 
 class MyPasswordResetView(PasswordResetView):
     template_name = 'registration/password_reset_form.html'
@@ -611,8 +677,8 @@ class CheckoutView(View):
                             self.request, "Please fill in the required billing address fields")
                 payment_option = form.cleaned_data.get('payment_option')
 
-                if payment_option == 'S' and bill == 1 and shipping == 1:
-                    return redirect('user:payment', payment_option='stripe')
+                if payment_option == 'O' and bill == 1 and shipping == 1:
+                    return redirect('user:payment', payment_option='Online')
                 elif payment_option == 'P' and bill == 1 and shipping == 1:
                     return redirect('user:payment', payment_option='paypal')
                 elif payment_option == 'C' and bill == 1 and shipping == 1:
@@ -651,142 +717,146 @@ class CheckoutView(View):
         except ObjectDoesNotExist:
             messages.warning(self.request, "You do not have an active order")
             return redirect("user:order-summary")
+# def payment_online(request):
+#     client = razorpay.Client(auth=("YOUR_ID", "YOUR_SECRET"))
+#     order = Order.objects.get(user=request.user, ordered=False)
+#     data = { "amount": order.get_total() , "currency": "INR", "receipt": order.id }
+#     payment = client.order.create(data=data)
+        
+# class PaymentView(View):
+#     def get(self, *args, **kwargs):
+#         order = Order.objects.get(user=self.request.user, ordered=False)
+#         if order.billing_address:
+#             context = {
+#                 'order': order,
+#                 'DISPLAY_COUPON_FORM': False,
+#                 'STRIPE_PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY
+#             }
+#             userprofile = UserProfile.objects.get(user=self.request.user)
+#             if userprofile.one_click_purchasing:
+#                 # fetch the users card list
+#                 cards = stripe.Customer.list_sources(
+#                     userprofile.stripe_customer_id,
+#                     limit=3,
+#                     object='card'
+#                 )
+#                 card_list = cards['data']
+#                 if len(card_list) > 0:
+#                     # update the context with the default card
+#                     context.update({
+#                         'card': card_list[0]
+#                     })
+#             return render(self.request, "payment.html", context)
+#         else:
+#             messages.warning(
+#                 self.request, "You have not added a billing address")
+#             return redirect("user:checkout")
 
+#     def post(self, *args, **kwargs):
+#         order = Order.objects.get(user=self.request.user, ordered=False)
+#         form = PaymentForm(self.request.POST)
+#         userprofile = UserProfile.objects.get(user=self.request.user)
+#         if form.is_valid():
+#             token = form.cleaned_data.get('stripeToken')
+#             save = form.cleaned_data.get('save')
+#             use_default = form.cleaned_data.get('use_default')
 
-class PaymentView(View):
-    def get(self, *args, **kwargs):
-        order = Order.objects.get(user=self.request.user, ordered=False)
-        if order.billing_address:
-            context = {
-                'order': order,
-                'DISPLAY_COUPON_FORM': False,
-                'STRIPE_PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY
-            }
-            userprofile = self.request.user.userprofile
-            if userprofile.one_click_purchasing:
-                # fetch the users card list
-                cards = stripe.Customer.list_sources(
-                    userprofile.stripe_customer_id,
-                    limit=3,
-                    object='card'
-                )
-                card_list = cards['data']
-                if len(card_list) > 0:
-                    # update the context with the default card
-                    context.update({
-                        'card': card_list[0]
-                    })
-            return render(self.request, "payment.html", context)
-        else:
-            messages.warning(
-                self.request, "You have not added a billing address")
-            return redirect("user:checkout")
+#             if save:
+#                 if userprofile.stripe_customer_id != '' and userprofile.stripe_customer_id is not None:
+#                     customer = stripe.Customer.retrieve(
+#                         userprofile.stripe_customer_id)
+#                     customer.sources.create(source=token)
 
-    def post(self, *args, **kwargs):
-        order = Order.objects.get(user=self.request.user, ordered=False)
-        form = PaymentForm(self.request.POST)
-        userprofile = UserProfile.objects.get(user=self.request.user)
-        if form.is_valid():
-            token = form.cleaned_data.get('stripeToken')
-            save = form.cleaned_data.get('save')
-            use_default = form.cleaned_data.get('use_default')
+#                 else:
+#                     customer = stripe.Customer.create(
+#                         email=self.request.user.email,
+#                     )
+#                     customer.sources.create(source=token)
+#                     userprofile.stripe_customer_id = customer['id']
+#                     userprofile.one_click_purchasing = True
+#                     userprofile.save()
 
-            if save:
-                if userprofile.stripe_customer_id != '' and userprofile.stripe_customer_id is not None:
-                    customer = stripe.Customer.retrieve(
-                        userprofile.stripe_customer_id)
-                    customer.sources.create(source=token)
+#             amount = int(order.get_total() * 100)
 
-                else:
-                    customer = stripe.Customer.create(
-                        email=self.request.user.email,
-                    )
-                    customer.sources.create(source=token)
-                    userprofile.stripe_customer_id = customer['id']
-                    userprofile.one_click_purchasing = True
-                    userprofile.save()
+#             try:
 
-            amount = int(order.get_total() * 100)
+#                 if use_default or save:
+#                     # charge the customer because we cannot charge the token more than once
+#                     charge = stripe.Charge.create(
+#                         amount=amount,  # cents
+#                         currency="inr",
+#                         customer=userprofile.stripe_customer_id
+#                     )
+#                 else:
+#                     # charge once off on the token
+#                     charge = stripe.Charge.create(
+#                         amount=amount,  # cents
+#                         currency="inr",
+#                         source=token
+#                     )
 
-            try:
+#                 # create the payment
+#                 payment = Payment()
+#                 payment.stripe_charge_id = charge['id']
+#                 payment.user = self.request.user
+#                 payment.amount = order.get_total()
+#                 payment.save()
 
-                if use_default or save:
-                    # charge the customer because we cannot charge the token more than once
-                    charge = stripe.Charge.create(
-                        amount=amount,  # cents
-                        currency="inr",
-                        customer=userprofile.stripe_customer_id
-                    )
-                else:
-                    # charge once off on the token
-                    charge = stripe.Charge.create(
-                        amount=amount,  # cents
-                        currency="inr",
-                        source=token
-                    )
+#                 # assign the payment to the order
 
-                # create the payment
-                payment = Payment()
-                payment.stripe_charge_id = charge['id']
-                payment.user = self.request.user
-                payment.amount = order.get_total()
-                payment.save()
+#                 order_items = order.items.all()
+#                 order_items.update(ordered=True)
+#                 for item in order_items:
+#                     item.save()
+#                 order.ordered = True
+#                 order.payment = payment
+#                 order.ref_code = create_ref_code()
+#                 order.save()
 
-                # assign the payment to the order
+#                 messages.success(self.request, "Your order was successful!")
 
-                order_items = order.items.all()
-                order_items.update(ordered=True)
-                for item in order_items:
-                    item.save()
-                order.ordered = True
-                order.payment = payment
-                order.ref_code = create_ref_code()
-                order.save()
+#                 return redirect("/")
 
-                messages.success(self.request, "Your order was successful!")
+#             except stripe.error.CardError as e:
+#                 body = e.json_body
+#                 err = body.get('error', {})
+#                 messages.warning(self.request, f"{err.get('message')}")
+#                 return redirect("/")
 
-                return redirect("/")
+#             except stripe.error.RateLimitError as e:
+#                 # Too many requests made to the API too quickly
+#                 messages.warning(self.request, "Rate limit error")
+#                 return redirect("/")
 
-            except stripe.error.CardError as e:
-                body = e.json_body
-                err = body.get('error', {})
-                messages.warning(self.request, f"{err.get('message')}")
-                return redirect("/")
+#             except stripe.error.InvalidRequestError as e:
+#                 # Invalid parameters were supplied to Stripe's API
+#                 print(e)
+#                 messages.warning(self.request, "Invalid parameters")
+#                 return redirect("/")
 
-            except stripe.error.RateLimitError as e:
-                # Too many requests made to the API too quickly
-                messages.warning(self.request, "Rate limit error")
-                return redirect("/")
+#             except stripe.error.AuthenticationError as e:
+#                 # Authentication with Stripe's API failed
+#                 # (maybe you changed API keys recently)
+#                 messages.warning(self.request, "Not authenticated")
+#                 return redirect("/")
 
-            except stripe.error.InvalidRequestError as e:
-                # Invalid parameters were supplied to Stripe's API
-                print(e)
-                messages.warning(self.request, "Invalid parameters")
-                return redirect("/")
+#             except stripe.error.APIConnectionError as e:
+#                 # Network communication with Stripe failed
+#                 messages.warning(self.request, "Network error")
+#                 return redirect("/")
 
-            except stripe.error.AuthenticationError as e:
-                # Authentication with Stripe's API failed
-                # (maybe you changed API keys recently)
-                messages.warning(self.request, "Not authenticated")
-                return redirect("/")
+#             except stripe.error.StripeError as e:
+#                 # Display a very generic error to the user, and maybe send
+#                 # yourself an email
+#                 messages.warning(
+#                     self.request, "Something went wrong. You were not charged. Please try again.")
+#                 return redirect("/")
 
-            except stripe.error.APIConnectionError as e:
-                # Network communication with Stripe failed
-                messages.warning(self.request, "Network error")
-                return redirect("/")
+#             except Exception as e:
+#                 # send an email to ourselves
+#                 messages.warning(
+#                     self.request, "A serious error occurred. We have been notifed.")
+#                 return redirect("/")
 
-            except stripe.error.StripeError as e:
-                # Display a very generic error to the user, and maybe send
-                # yourself an email
-                messages.warning(
-                    self.request, "Something went wrong. You were not charged. Please try again.")
-                return redirect("/")
-
-            except Exception as e:
-                # send an email to ourselves
-                messages.warning(
-                    self.request, "A serious error occurred. We have been notifed.")
-                return redirect("/")
-
-        messages.warning(self.request, "Invalid data received")
-        return redirect("/payment/stripe/")
+#         messages.warning(self.request, "Invalid data received")
+#         return redirect("/payment/stripe/")

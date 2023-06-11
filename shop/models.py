@@ -133,6 +133,12 @@ class subcategory(models.Model):
     
     def __str__(self):
         return self.name
+class PasswordResetRequest(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    token = models.CharField(max_length=100, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_expired = models.BooleanField(default=False)
+    
 class Slide(models.Model):
     caption1 = models.CharField(max_length=100)
     caption2 = models.CharField(max_length=100)

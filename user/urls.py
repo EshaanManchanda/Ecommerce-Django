@@ -1,6 +1,8 @@
-from .views import HomeView, registerPage, loginPage, logoutUser, OrderSummaryView, CatView, CheckoutView, aboutus, Author, ItemDetailView, add_to_cart, AddCouponView, remove_from_cart, remove_single_item_from_cart, PaymentView, RequestRefundView,subCatView,search,order_history,profileView,wishlist,add_to_wishlist
+from .views import HomeView, registerPage, loginPage, logoutUser, OrderSummaryView, CatView, CheckoutView, aboutus, Author, ItemDetailView, add_to_cart, AddCouponView, remove_from_cart, remove_single_item_from_cart, RequestRefundView,subCatView,search,order_history,profileView,wishlist,add_to_wishlist
+# ,forgot_password,reset_password
 from django.urls import path, include
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 app_name = 'user'
 
 urlpatterns = [
@@ -22,10 +24,18 @@ urlpatterns = [
     path('remove-from-cart/<slug>/', remove_from_cart, name='remove-from-cart'),
     path('remove-item-from-cart/<slug>/', remove_single_item_from_cart,
          name='remove-single-item-from-cart'),
-    path('payment/<payment_option>/', PaymentView.as_view(), name='payment'),
+    # path('payment/<payment_option>/', payment_online, name='payment'),
+    # path("payment/process/", process_payment, name="process_payment"),
     path('request-refund/', RequestRefundView.as_view(), name='request-refund'),
     path('order-history/<pk>/', order_history, name='order-history'), 
     # Wish List
     path("wishlist", wishlist, name="wishlist"),
     path("wishlist/add_to_wishlist/<int:id>", add_to_wishlist, name="user_wishlist"),
+    # path('forgot-password/', forgot_password, name='forgot_password'),
+    # path('reset-password/<str:token>/', reset_password, name='reset_password'),
+    # Other URL patterns
+    # path('reset-password/', auth_views.PasswordResetView.as_view(template_name='reset_password.html'), name='password_reset'),
+    # path('reset-password/done/', auth_views.PasswordResetDoneView.as_view(template_name='password_reset_done.html'), name='password_reset_done'),
+    # path('reset-password/confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='password_reset_confirm.html'), name='password_reset_confirm'),
+    # path('reset-password/complete/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_complete.html'), name='password_reset_complete'),
 ]

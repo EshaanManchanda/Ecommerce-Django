@@ -183,6 +183,21 @@ def product_edit(request, pk):
     }
     return render(request, 'shop/dashboard/products_edit.html', context)
 
+@login_required(login_url='shop:account_login')
+@allowed_users(allowed_roles=['shop'])
+def product_add(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST)
+        if form.is_valid():
+            obj = form.save()
+            obj.save()
+            return redirect("shop:dashboard-products")
+    else:
+        form = ProductForm
+    context = {
+        'form': form,
+    }
+    return render(request, 'shop/dashboard/products.html', context)
 
 @login_required(login_url='shop:account_login')
 @allowed_users(allowed_roles=['shop'])

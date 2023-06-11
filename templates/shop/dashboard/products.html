@@ -647,14 +647,15 @@
         <!-- Area Chart Example-->
 
         <div class="row">
-                <div class="col-4 mt-5 mb-5 card" id="card">
-                    {% comment %} {% include 'shop/dashboard/products_add.html' %} {% endcomment %}
-                    <form method="POST">
-                        {% csrf_token %}
-                        {{ form|crispy }}
-                        <input class="btn btn-info" type="submit" value="Confirm">
-                    </form>
-                </div>
+            <div class="col-4 mt-5 mb-5 card" id="card">
+                {% comment %} {% include 'shop/dashboard/products_add.html' %} {% endcomment %}
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    {% include 'shop/dashboard/products_add.html'%}
+                    <input class="btn btn-info" type="submit" value="Add">
+                </form>
+            </div>
 
             <!-- Example DataTables Card-->
             <div class="col-8 mt-5">

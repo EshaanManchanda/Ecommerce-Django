@@ -14,6 +14,8 @@ import os
 from decouple import config
 from pathlib import Path
 
+from django.urls import reverse_lazy
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -27,7 +29,7 @@ SECRET_KEY = 'django-insecure-xi*!&#k=ad=s#ok^c!3c1e4s3%!&tla7l$z)s46k%n5k8kji$$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.29.127']
 
 
 # Application definition
@@ -41,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 'razorpay-python',
     'debug_toolbar',
     
     'django_countries',
@@ -205,3 +208,13 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 STRIPE_PUBLIC_KEY = config('STRIPE_TEST_PUBLIC_KEY')
 STRIPE_SECRET_KEY = config('STRIPE_TEST_SECRET_KEY')
+
+RAZOR_API_KEY=config('RAZOR_API_KEY')
+RAZOR_SECURITY_KEY=config('RAZOR_SECURITY_KEY')
+
+# Set the URL for the password reset confirmation link
+PASSWORD_RESET_CONFIRM_URL = reverse_lazy('user:password_reset_confirm')
+
+# Set the email subject and sender for the password reset email
+PASSWORD_RESET_EMAIL_SUBJECT = 'Reset your password'
+PASSWORD_RESET_EMAIL_SENDER = config('EMAIL_US')

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Item,company,Coupon,comments,category,OrderItem,Order,Address,Payment,subcategory,AboutUs,Slide,Employee
+from .models import Item,company,Coupon,comments,category,OrderItem,Order,Address,Payment,subcategory,AboutUs,Slide,Employee,ContactForm
 # Register your models here.
 def make_refund_accepted(modeladmin, request, queryset):
     queryset.update(refund_requested=False, refund_granted=True)
@@ -88,6 +88,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 admin.site.register(Item,ItemAdmin)
 admin.site.register(AboutUs)
+admin.site.register(ContactForm)
 admin.site.register(comments)
 admin.site.register(company)
 admin.site.register(Coupon)
