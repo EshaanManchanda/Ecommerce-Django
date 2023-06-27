@@ -1,4 +1,4 @@
-from .views import HomeView, registerPage, loginPage, logoutUser, OrderSummaryView, CatView, CheckoutView, aboutus, Author, ItemDetailView, add_to_cart, AddCouponView, remove_from_cart, remove_single_item_from_cart, RequestRefundView,subCatView,search,order_history,profileView,wishlist,add_to_wishlist
+from .views import HomeView, registerPage, loginPage, logoutUser, OrderSummaryView, CatView, CheckoutView, aboutus, Author, ItemDetailView, add_to_cart, AddCouponView, remove_from_cart, remove_single_item_from_cart, RequestRefundView,subCatView,search,order_history,profileView,wishList,add_to_wishlist
 # ,forgot_password,reset_password
 from django.urls import path, include
 from django.contrib import admin
@@ -29,7 +29,7 @@ urlpatterns = [
     path('request-refund/', RequestRefundView.as_view(), name='request-refund'),
     path('order-history/<pk>/', order_history, name='order-history'), 
     # Wish List
-    path("wishlist", wishlist, name="wishlist"),
+    path("wishlist", wishList, name="wishlist"),
     path("wishlist/add_to_wishlist/<int:id>", add_to_wishlist, name="user_wishlist"),
     # path('forgot-password/', forgot_password, name='forgot_password'),
     # path('reset-password/<str:token>/', reset_password, name='reset_password'),

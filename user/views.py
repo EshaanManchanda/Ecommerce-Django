@@ -21,9 +21,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, View, TemplateView, FormView
 from .models import wishlist, UserProfile
 from shop.models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, AboutUs, ContactForm, category as Category, company, subcategory
-from django.core.mail import EmailMessage, send_mail
+from django.core.mail import EmailMessage, send_mail , EmailMultiAlternatives
+from django.template.loader import get_template
 from django.conf import settings
-from django.template.loader import render_to_string
 from django.contrib.auth.views import PasswordResetView, PasswordResetCompleteView
 from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
@@ -33,7 +33,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 
-stripe.api_key = settings.STRIPE_SECRET_KEY
+# stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 # def forgot_password(request):
@@ -107,11 +107,11 @@ class MyPasswordResetDoneView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            if request.user.groups.all()[0].name == 'customer':
+            if request.user.groups.all()[0].name == 'customer': # type: ignore
                 return redirect(reverse_lazy('user:login'))
-            elif request.user.groups.all()[0].name == "shop":
+            elif request.user.groups.all()[0].name == "shop": # type: ignore
                 return redirect(reverse_lazy('shop:account_login'))
-            elif request.user.groups.all()[0].name == 'employee':
+            elif request.user.groups.all()[0].name == 'employee': # type: ignore
                 return redirect(reverse_lazy('shop:account_login'))
         else:
             return redirect(reverse_lazy('user:login'))
@@ -123,7 +123,7 @@ class MyPasswordResetView(PasswordResetView):
     subject_template_name = 'registration/password_reset_subject.txt'
 
 
-class Author(DetailView):
+class Author(DetailView): # type: ignore
     model = AboutUs
     template_name = "author.html"
 
@@ -131,7 +131,10 @@ class Author(DetailView):
 @login_required(login_url='user:login')
 def profileView(request, pk):
     data = User.objects.get(id=pk)
-    address_s = Address.objects.get(user_id=pk, address_type="S")
+    try:
+        address_s = Address.objects.get(user_id=pk, address_type="S")
+    except ObjectDoesNotExist:
+        address_s = None
     return render(request, "userProfile.html", {'data': data, 'address': address_s})
 
 
@@ -150,16 +153,23 @@ def aboutus(request):
     return render(request, "aboutus.html", {'data': data})
 
 
-def successful(request):
-    template = render_to_string(
-        'account/email/order_successful.html', {'name': request.user.first_name})
-    email = EmailMessage(
-        'Thank you for purchasing',
-        template,
-        settings.EMAIL_HOST_USER,
-        [request.user.email],
-    )
-    email.fail_silently = False
+def successful(request,refCode):
+    orderItem=Order.objects.get(ref_code=refCode)
+    context={
+        'order':orderItem
+    }
+    template =get_template(
+        'account/email/order_successful.html')
+    content=template.render(context)
+    # email = EmailMessage(
+    #     'Thank you for purchasing',
+    #     content,
+    #     settings.EMAIL_HOST_USER,
+    #     [request.user.email],
+    # )
+    email = EmailMultiAlternatives('thank you for purchasing', 'Order successful ', settings.EMAIL_HOST_USER, [request.user.email])
+    email.attach_alternative(content, "text/html")
+    email.fail_silently = False # type: ignore
     email.send()
 
 
@@ -175,7 +185,7 @@ def products(request):
 
 
 @login_required
-def wishlist(request):
+def wishList(request):
     products = Item.objects.filter(users_wishlist=request.user)
     return render(request, "user_wish_list.html", {"wishlist": products})
 
@@ -185,17 +195,16 @@ def add_to_wishlist(request, id):
     product = get_object_or_404(Item, id=id)
     if product.users_wishlist.filter(id=request.user.id).exists():
         product.users_wishlist.remove(request.user)
-        messages.success(request, product.title +
-                         " has been removed from your WishList")
+        messages.success(request, product.title + " has been removed from your WishList")
     else:
         product.users_wishlist.add(request.user)
         messages.success(request, "Added " +
-                         product.title + " to your WishList")
+                         product.title + " to your WishList") # type: ignore
     return HttpResponseRedirect(request.META["HTTP_REFERER"])
 
 
 def order_history(request, pk):
-    pass_day = timezone.now()-timezone.timedelta(days=5)
+    # pass_day = timezone.now()-timezone.timedelta(days=5)
     context = {
         'category': Category.objects.order_by('category'),
         'order': Order.objects.all().filter(user=pk).order_by('-ordered_date'),
@@ -251,7 +260,7 @@ class CatView(ListView):
         price_range = self.request.GET.get('price_range')
         q = self.request.GET.get('q')
         category = Category.objects.get(slug=self.kwargs['slug'])
-        sub_cat = subcategory.objects.filter(main=category.id)
+        sub_cat = subcategory.objects.filter(main=category.id) # type: ignore
         if price_range == 'low_to_high':
             item = Item.objects.filter(category=category, is_active=True).order_by('price')
         elif price_range == 'high_to_low':
@@ -707,7 +716,7 @@ class CheckoutView(View):
 
                     messages.success(
                         self.request, "Your order was successful!")
-                    successful(self.request)
+                    successful(self.request,order.ref_code)
                     return redirect('/')
                 else:
                     messages.warning(
