@@ -92,7 +92,7 @@
     <div class="class ">
       <div class="card-group product-slider">
         {% for item in object_list %}
-        {% if item.category.slug == "electornic_items" %}
+        {% if item.category.slug == "electronics" %}
         <div class="card text-bg-success border-success text-white p-2 product-card">
           <a href="{{ item.get_absolute_url }}"><img src="{{item.image.url}}" class="card-img-top imagecrd rounded"
               alt="{{item.title}}" /></a>
@@ -128,7 +128,7 @@
     <div class="class">
       <div class="card-group">
         {% for item in object_list %}
-        {% if item.category.slug == "men_wearable" %}
+        {% if item.category.slug == "cloths" %}
         <div class="card text-bg-dark p-2">
           <a href="{{ item.get_absolute_url }}"><img src="{{item.image.url}}" class="card-img-top imagecrd rounded"
               alt="{{item.title}}" /></a>
@@ -161,10 +161,10 @@
 <div class="container mt-5">
   <nav class="navbar navbar-expand-lg text-bg-info">
     <div class="container-fluid text-align-center">
-      <a class="navbar-brand text-white" href="{% url 'user:category' 'electornic_items' %}">
+      <a class="navbar-brand text-white" href="{% url 'user:category' 'electronics' %}">
         <h3>LATEST PRODUCCTS</h3>
       </a>
-      <a href="{% url 'user:category' 'men_wearable' %}">
+      <a href="{% url 'user:category' 'cloths' %}">
         <button class="btn btn-outline-light" type="submit">View All</button>
       </a>
     </div>
@@ -208,10 +208,10 @@
 <div class="container mt-5">
   <nav class="navbar navbar-expand-lg text-bg-dark">
     <div class="container-fluid text-align-center">
-      <a class="navbar-brand text-white" href="{% url 'user:category' 'electornic_items' %}">
+      <a class="navbar-brand text-white" href="{% url 'user:category' 'electronics' %}">
         <h3>ELECTRONICS</h3>
       </a>
-      <a href="{% url 'user:category' 'electornic_items' %}">
+      <a href="{% url 'user:category' 'electronics' %}">
         <button class="btn btn-outline-light" type="submit">View All</button>
       </a>
     </div>
@@ -221,7 +221,7 @@
   <div class="home-demo">
     <div class="owl-carousel owl-theme">
       {% for item in object_list %}
-      {% if item.category.slug == "electornic_items" %}
+      {% if item.category.slug == "electronics" %}
       <div class="item">
         <div class="card p-2 product-card">
           <a href="{{ item.get_absolute_url }}"><img src="{{item.image.url}}" class="card-img-top imagecrd rounded"
@@ -255,10 +255,10 @@
 <div class="container mt-5">
   <nav class="navbar navbar-expand-lg text-bg-success">
     <div class="container-fluid text-align-center">
-      <a class="navbar-brand text-white" href="{% url 'user:category' 'electornic_items' %}">
-        <h3>MEN WEARABLES</h3>
+      <a class="navbar-brand text-white" href="{% url 'user:category' 'cloths' %}">
+        <h3>Cloths</h3>
       </a>
-      <a href="{% url 'user:category' 'men_wearable' %}">
+      <a href="{% url 'user:category' 'cloths' %}">
         <button class="btn btn-outline-light" type="submit">View All</button>
       </a>
     </div>
@@ -268,7 +268,7 @@
   <div class="home-demo">
     <div class="owl-carousel owl-theme">
       {% for item in object_list %}
-      {% if item.category.slug == "men_wearable" %}
+      {% if item.category.slug == "cloths" %}
       <div class="item">
         <div class="card p-2 product-card">
           <a href="{{ item.get_absolute_url }}"><img src="{{item.image.url}}" class="card-img-top imagecrd rounded"
@@ -302,7 +302,7 @@
 <div class="container mt-5">
   <nav class="navbar navbar-expand-lg text-bg-danger">
     <div class="container-fluid text-align-center">
-      <a class="navbar-brand text-white" href="{% url 'user:category' 'electornic_items' %}">
+      <a class="navbar-brand text-white" href="{% url 'user:category' 'electronics' %}">
         <h3>WOMEN WEARABLES</h3>
       </a>
       <a href="{% url 'user:category' 'women-wear' %}">

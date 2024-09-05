@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404, reverse
 from django.contrib.auth.models import User
 from django_countries.fields import CountryField
 from django.utils.dateparse import parse_date
+import numpy as np
 
 
 # Create your models here.
@@ -112,6 +113,16 @@ class Item(models.Model):
         return reverse("user:remove-from-cart", kwargs={
             'slug': self.slug
         })
+        
+    def get_vector(self):
+        """
+        Convert item attributes to a numeric vector.
+        """
+        return np.array([
+            self.price,
+            self.quantity,
+            # Include other features here
+        ])
         
         
 class category(models.Model):

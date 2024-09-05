@@ -1,8 +1,11 @@
+import json
 import time
 import random
 import string
+from urllib import request
 import razorpay
 import stripe
+from ml.models import ProductInteraction
 from shop.models import PasswordResetRequest
 import secrets
 from django.utils import timezone
@@ -15,7 +18,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.contrib.auth import authenticate, login, logout
 from .decorators import unauthenticated_user, allowed_users
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, View, TemplateView, FormView
@@ -32,6 +35,7 @@ from .models import UserProfile
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
+from ml.recommendation_model import get_recommendations
 
 # stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -348,6 +352,52 @@ class ItemDetailView(DetailView):
     model = Item
     template_name = "product.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        item = self.get_object()
+
+        # Get all products in the database
+        all_items = Item.objects.all()
+
+        # Get recommendations for the current item
+        recommended_products = get_recommendations([item], all_items)
+
+        # Add recommended products to the context
+        context['recommended_products'] = recommended_products
+        return context
+
+
+def record_click(request):
+    print("click")
+    if request.method == 'POST':
+        try:
+            # Parse the JSON data
+            data = json.loads(request.body)
+            product_id = data.get('product_id')
+
+            if product_id:
+                try:
+                    product = Item.objects.get(id=product_id)
+
+                    # Record the click interaction
+                    ProductInteraction.objects.create(
+                        user=request.user if request.user.is_authenticated else None,
+                        product=product,
+                        interaction_type='click')
+
+                    # Return a successful response
+                    return JsonResponse({"status": "success"}, status=200)
+
+                except Item.DoesNotExist:
+                    # Return a 404 response if the product does not exist
+                    return JsonResponse({"error": "Product not found"}, status=404)
+
+        except json.JSONDecodeError:
+            # Return a 400 response if JSON data is invalid
+            return JsonResponse({"error": "Invalid JSON data"}, status=400)
+
+    # If the request is not POST, return a 400 error
+    return JsonResponse({"error": "Bad request"}, status=400)
 
 @login_required(login_url='user:login')
 def add_to_cart(request, slug):

@@ -27,12 +27,14 @@
         <li>
           <a href="#">Shopping</a>
           <ul class="sub_menu">
+            {% if category %}
             {% for cat in category %}
                 <li>
                   <a href="{% url 'user:category' cat.slug %}">
                     {{cat.category}}</a>
                 </li>
             {% endfor %}
+            {% endif %}
           </ul>
         </li>
         <li class="nav-item">

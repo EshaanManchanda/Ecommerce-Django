@@ -3886,7 +3886,8 @@ footer .socials {
                           </a>
                       </div>
                       <div id="AddToCart" quickbeam="add-to-cart">
-                        <a href="{{object.get_add_to_cart_url}} " class="text-white text-decoration-none"><span>Add to Cart</span></a>
+                        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                        <a onclick="recordClick({{ object.id }})" href="{{object.get_add_to_cart_url}} "  class="text-white text-decoration-none"><span>Add to Cart</span></a>
                         
                       </div>
                     </div>
@@ -3915,240 +3916,19 @@ footer .socials {
         <div class="_cont">
           <h2>You might also like</h2>
           <div class="collection-list cols-4" id="collection-list" data-products-per-page="4">
-            <a class="product-box">
+            {% for product in recommended_products %}
+            <a href="{{product.get_absolute_url}}" class="product-box">
               <span class="img">
-                <span style="background-image: url('//cdn.shopify.com/s/files/1/1047/6452/products/tricko1_70d2887b-ec6a-4bcb-a93b-7fd1783e6445_grande.jpg?v=1447530130')" class="i first"></span>
-                <span class="i second" style="background-image: url('//cdn.shopify.com/s/files/1/1047/6452/products/product_030f9fc5-f253-4dca-a43a-fe2b719d0704_grande.png?v=1447530130')"></span>
+                <span style="background-image: url('{{product.image.url}}')" class="i first"></span>
               </span>
               <span class="text">
-                <strong>Tony Hunfinger T-Shirt New York 2</strong>
+                <strong>{{product.name}}</strong>
                 <span>
-                  From $800.00
+                  From Rs.{{product.price}}
                 </span>
-                <div class="variants">
-                  <div class="variant">
-                    <div class="var m available">
-                      <div class="t">M</div>
-                    </div>
-                    <div class="var l available">
-                      <div class="t">L</div>
-                    </div>
-                    <div class="var xl available">
-                      <div class="t">XL</div>
-                    </div>
-                    <div class="var xxl available">
-                      <div class="t">XXL</div>
-                    </div>
-                  </div>
-                  <div class="variant">
-                    <div class="var color blue available">
-                      <div class="c" style="background-color: blue;"></div>
-                    </div>
-                    <div class="var color red available">
-                      <div class="c" style="background-color: red;"></div>
-                    </div>
-                    <div class="var color yellow available">
-                      <div class="c" style="background-color: yellow;"></div>
-                    </div>
-                  </div>
-                </div>
               </span>
             </a>
-            <a class="product-box">
-              <span class="img">
-                <span style="background-image: url('//cdn.shopify.com/s/files/1/1047/6452/products/tricko2_357767df-d7ff-4b58-b705-edde76bb32b7_grande.jpg?v=1447530150')" class="i first"></span>
-                <span class="i second" style="background-image: url('//cdn.shopify.com/s/files/1/1047/6452/products/tricko1_613d5776-ea61-4f9b-abef-0ce847c63a67_grande.jpg?v=1447530150')"></span>
-              </span>
-              <span class="text">
-                <strong>Tony Hunfinger T-Shirt New York 3</strong>
-                <span>
-                  From $800.00
-                </span>
-                <div class="variants">
-                  <div class="variant">
-                    <div class="var m available">
-                      <div class="t">M</div>
-                    </div>
-                    <div class="var l available">
-                      <div class="t">L</div>
-                    </div>
-                    <div class="var xl available">
-                      <div class="t">XL</div>
-                    </div>
-                    <div class="var xxl available">
-                      <div class="t">XXL</div>
-                    </div>
-                  </div>
-                  <div class="variant">
-                    <div class="var color blue available">
-                      <div class="c" style="background-color: blue;"></div>
-                    </div>
-                    <div class="var color red available">
-                      <div class="c" style="background-color: red;"></div>
-                    </div>
-                    <div class="var color yellow available">
-                      <div class="c" style="background-color: yellow;"></div>
-                    </div>
-                  </div>
-                </div>
-              </span>
-            </a>
-            <a href="/collections/men/products/copy-of-copy-of-copy-of-tommy-hilfiger-t-shirt-new-york-4" class="product-box">
-              <span class="img">
-                <span style="background-image: url('//cdn.shopify.com/s/files/1/1047/6452/products/tricko3_0e98498a-123c-4305-9d94-d8280bb46416_grande.jpg?v=1447530164')" class="i first"></span>
-                <span class="i second" style="background-image: url('//cdn.shopify.com/s/files/1/1047/6452/products/tricko2_6c949188-dba0-4789-9434-c0821b92f3f4_grande.jpg?v=1447530164')"></span>
-              </span>
-              <span class="text">
-                <strong>Tony Hunfinger T-Shirt New York 4</strong>
-                <span>
-                  From $800.00
-                </span>
-                <div class="variants">
-                  <div class="variant">
-                    <div class="var m available">
-                      <div class="t">M</div>
-                    </div>
-                    <div class="var l available">
-                      <div class="t">L</div>
-                    </div>
-                    <div class="var xl available">
-                      <div class="t">XL</div>
-                    </div>
-                    <div class="var xxl available">
-                      <div class="t">XXL</div>
-                    </div>
-                  </div>
-                  <div class="variant">
-                    <div class="var color blue available">
-                      <div class="c" style="background-color: blue;"></div>
-                    </div>
-                    <div class="var color red available">
-                      <div class="c" style="background-color: red;"></div>
-                    </div>
-                    <div class="var color yellow available">
-                      <div class="c" style="background-color: yellow;"></div>
-                    </div>
-                  </div>
-                </div>
-              </span>
-            </a>
-            <a class="product-box">
-              <span class="img">
-                <span style="background-image: url('//cdn.shopify.com/s/files/1/1047/6452/products/product_7d606126-1b60-4738-99b3-062810f2db8b_grande.png?v=1447530674')" class="i first"></span>
-                <span class="i second" style="background-image: url('//cdn.shopify.com/s/files/1/1047/6452/products/tricko3_fd08d231-654c-4304-81b2-9191e6fd141e_grande.jpg?v=1447530674')"></span>
-              </span>
-              <span class="text">
-                <strong>Tony Hunfinger T-Shirt New York 5</strong>
-                <span>
-                  From $800.00
-                </span>
-                <div class="variants">
-                  <div class="variant">
-                    <div class="var m available">
-                      <div class="t">M</div>
-                    </div>
-                    <div class="var l available">
-                      <div class="t">L</div>
-                    </div>
-                    <div class="var xl available">
-                      <div class="t">XL</div>
-                    </div>
-                    <div class="var xxl available">
-                      <div class="t">XXL</div>
-                    </div>
-                  </div>
-                  <div class="variant">
-                    <div class="var color blue available">
-                      <div class="c" style="background-color: blue;"></div>
-                    </div>
-                    <div class="var color red available">
-                      <div class="c" style="background-color: red;"></div>
-                    </div>
-                    <div class="var color yellow available">
-                      <div class="c" style="background-color: yellow;"></div>
-                    </div>
-                  </div>
-                </div>
-              </span>
-            </a>
-            <a class="product-box hidden">
-              <span class="img">
-                <span style="background-image: url('//cdn.shopify.com/s/files/1/1047/6452/products/tricko1_bba77d82-7f85-47af-9a45-f4700bcc04ad_grande.jpg?v=1447530689')" class="i first"></span>
-                <span class="i second" style="background-image: url('//cdn.shopify.com/s/files/1/1047/6452/products/product_f065e961-d296-48a8-8a67-a3532200e257_grande.png?v=1447530689')"></span>
-              </span>
-              <span class="text">
-                <strong>Tony Hunfinger T-Shirt New York 6</strong>
-                <span>
-                  From $800.00
-                </span>
-                <div class="variants">
-                  <div class="variant">
-                    <div class="var m available">
-                      <div class="t">M</div>
-                    </div>
-                    <div class="var l available">
-                      <div class="t">L</div>
-                    </div>
-                    <div class="var xl available">
-                      <div class="t">XL</div>
-                    </div>
-                    <div class="var xxl available">
-                      <div class="t">XXL</div>
-                    </div>
-                  </div>
-                  <div class="variant">
-                    <div class="var color blue available">
-                      <div class="c" style="background-color: blue;"></div>
-                    </div>
-                    <div class="var color red available">
-                      <div class="c" style="background-color: red;"></div>
-                    </div>
-                    <div class="var color yellow available">
-                      <div class="c" style="background-color: yellow;"></div>
-                    </div>
-                  </div>
-                </div>
-              </span>
-            </a>
-            <a class="product-box hidden">
-              <span class="img">
-                <span style="background-image: url('//cdn.shopify.com/s/files/1/1047/6452/products/tricko2_bf59c7f2-7c1f-4822-9494-6a984598a56c_grande.jpg?v=1447530706')" class="i first"></span>
-                <span class="i second" style="background-image: url('//cdn.shopify.com/s/files/1/1047/6452/products/tricko1_c6fa0fc1-99a0-4bd0-a1d8-0270127977fc_grande.jpg?v=1447530706')"></span>
-              </span>
-              <span class="text">
-                <strong>Tony Hunfinger T-Shirt New York 7</strong>
-                <span>
-                  From $800.00
-                </span>
-                <div class="variants">
-                  <div class="variant">
-                    <div class="var m available">
-                      <div class="t">M</div>
-                    </div>
-                    <div class="var l available">
-                      <div class="t">L</div>
-                    </div>
-                    <div class="var xl available">
-                      <div class="t">XL</div>
-                    </div>
-                    <div class="var xxl available">
-                      <div class="t">XXL</div>
-                    </div>
-                  </div>
-                  <div class="variant">
-                    <div class="var color blue available">
-                      <div class="c" style="background-color: blue;"></div>
-                    </div>
-                    <div class="var color red available">
-                      <div class="c" style="background-color: red;"></div>
-                    </div>
-                    <div class="var color yellow available">
-                      <div class="c" style="background-color: yellow;"></div>
-                    </div>
-                  </div>
-                </div>
-              </span>
-            </a>
+            {% endfor %}
           </div>
           <div class="more-products" id="more-products-wrap">
             <span id="more-products" data-rows_per_page="1">More products</span>
@@ -4162,7 +3942,22 @@ footer .socials {
 
 {% block extra_scripts %}
 <script src='//production-assets.codepen.io/assets/common/stopExecutionOnTimeout-b2a7b3fe212eaa732349046d8416e00a9dec26eb7fd347590fbced3ab38af52e.js'></script><script src='//raw.githubusercontent.com/greenwoodents/quickbeam.js/master/dist/quickbeam.min.js'></script><script src='//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.2/TweenMax.min.js'></script>
-<script >//Hey you! Thanks for checking this pen. :) I open source it as library. https://github.com/greenwoodents/quickbeam.js
+<script >
+
+  function recordClick(productId) {
+    console.log(productId);
+    fetch('/record-click/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+      },
+      body: JSON.stringify({ product_id: productId })
+    })
+    .then(response => response.json())
+    .then(data => console.log(data)) // For debugging, check server response
+    .catch(error => console.error('Error:', error));
+  }
 
 var Quickbeam = (function () {
   // Instance stores a reference to the Singleton
